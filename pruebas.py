@@ -1,17 +1,17 @@
 
-# import bcrypt
+import bcrypt
 # from gestion_user.control_usuarios import aut_user
 
 
-# # txt = '18329114'
-# # pw = txt.encode('utf-8')
-# # sal = bcrypt.gensalt()
+txt = 'user001'
+pw = txt.encode('utf-8')
+sal = bcrypt.gensalt()
 
-# # encript = bcrypt.hashpw(pw, sal)
+encript = bcrypt.hashpw(pw, sal)
 
-# # contrasenia_encript = bytes(data_user('JDORANTES')['passw'][0], 'utf-8')
+# contrasenia_encript = bytes(data_user('JDORANTES')['passw'][0], 'utf-8')
 
-# # print(encript)
+print(encript)
 
 # # result = bcrypt.checkpw(bytes('18329114', 'utf-8'), contrasenia_encript)
 
@@ -20,6 +20,6 @@
 # print(aut_user('JDORANTES', '18329114'))
 
 
-from scripts.oCelulas import DataCelulas
+# from scripts.oCelulas import DataCelulas
 
-print(DataCelulas().sobres_por_entregar())
+# print(DataCelulas().sobres_por_entregar())
