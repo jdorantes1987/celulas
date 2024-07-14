@@ -65,7 +65,7 @@ with st.expander('Activas'):
     
     st.header('-> Última actividad del mes:')
  
-    celula_con_activ = celulas_activas_historico()
+    celula_con_activ = celulas_activas_historico().copy()
     celula_con_activ['fecha'] = to_datetime(celula_con_activ['fecha'], yearfirst=True)
     grouped = celula_con_activ.groupby(['cod_red', 'anfitriones' ,'c_lider', 'direccion'])
     last_day_of_month = grouped['fecha'].max().reset_index()
@@ -76,6 +76,10 @@ with st.expander('Activas'):
                                          'c_lider',
                                          'direccion'])[['fecha', 'dias_transc']].max()
     st.write(grouped2)
+    
+    st.header('-> Histórico de celulas:')
+    hist_celulas = celulas_activas_historico().copy()
+    st.write(hist_celulas)
 
 
 st.title('Discipulados')
@@ -104,4 +108,8 @@ with st.expander('Datos'):
     grouped2 = last_day_of_month.groupby(['cod_red',
                                          'c_lider',])[['fecha', 'dias_transc']].max()
     st.write(grouped2)
+    
+    st.header('-> Histórico de díscipulados:')
+    st.write(discipulados_historico)
+
     
