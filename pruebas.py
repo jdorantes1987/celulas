@@ -3,7 +3,7 @@ import bcrypt
 # from gestion_user.control_usuarios import aut_user
 
 
-txt = 'user001'
+txt = 'user002'
 pw = txt.encode('utf-8')
 sal = bcrypt.gensalt()
 
