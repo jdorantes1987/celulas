@@ -61,14 +61,14 @@ with col6:
 
 with col7:
     expositor = st.text_input(
-                                label='expositor',
-                                disabled=False,
-                                placeholder='ingrese el nombre del expositor del tema.')
+                              label='expositor',
+                              disabled=False,
+                              placeholder='ingrese el nombre del expositor del tema.')
 with col8:
     tema = st.text_input(
-                                label='tema',
-                                disabled=False,
-                                placeholder='ingrese el tema impartido.')
+                         label='tema',
+                         disabled=False,
+                         placeholder='ingrese el tema impartido.')
 
 numero_asistentes = st.slider("número de asistentes", 0, 100, 10)
 bs = st.number_input("ingrese el monto en bolívares.")
@@ -77,6 +77,11 @@ usd = st.number_input("ingrese el monto en dólares.")
 sobre_entregado = st.checkbox("sobre entregado?")
 if sobre_entregado:
    sobre_entregado=True
+   
+observ = st.text_input(
+                       label='observaciones',
+                       disabled=False,
+                       placeholder='ingrese las observaciones')
 
 registro = [(None, 
              id_liderazgo, 
@@ -89,7 +94,8 @@ registro = [(None,
              numero_asistentes,
              bs,
              usd,
-             sobre_entregado)]  
+             sobre_entregado,
+             observ)]  
 
 if st.button("agregar"):
     data.insert_hist_discipulados(registro)

@@ -86,6 +86,11 @@ usd = st.number_input("ingrese el monto en dólares.")
 sobre_entregado = st.checkbox("sobre entregado?")
 if sobre_entregado:
    sobre_entregado=True
+   
+observ = st.text_input(
+                      label='observaciones',
+                      disabled=False,
+                      placeholder='ingrese las observaciones')
 
 registro = [(None, 
              id_liderazgo, 
@@ -98,7 +103,8 @@ registro = [(None,
              numero_asistentes,
              bs,
              usd,
-             sobre_entregado)]  
+             sobre_entregado,
+             observ)]  
 
 if st.button("agregar"):
     data.insert_hist_celulas(registro)

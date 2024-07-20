@@ -31,7 +31,7 @@ class BD_SQLite_Celulas(IDataSource):
     
     def insert_hist_celulas(self, data):
         try:
-            self.cur.executemany("INSERT INTO hist_celulas VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", data)
+            self.cur.executemany("INSERT INTO hist_celulas VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", data)
             print('Registro insertado.')
             self.conexion.commit()
             self.cur.close()
@@ -40,7 +40,7 @@ class BD_SQLite_Celulas(IDataSource):
             
     def insert_hist_discipulados(self, data):
         try:
-            self.cur.executemany("INSERT INTO hist_discipulados VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", data)
+            self.cur.executemany("INSERT INTO hist_discipulados VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", data)
             self.conexion.commit()
             self.cur.close()
             print('Registro insertado.')
