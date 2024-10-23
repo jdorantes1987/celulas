@@ -27,20 +27,34 @@ def celulas_activas():
 def temas():
     return data.temas()
 
-
-liderazgo = liderazgo_activo()
+if 'stage' not in st.session_state:
+    st.session_state.stage = 0
+    
+def set_state(i):
+    st.session_state.stage = i
+    
+if st.session_state.stage == 0:
+    st.session_state.liderazgo = liderazgo_activo()
+    st.session_state.w_exp = ""
+    st.session_state.w_observ = ""
+    st.session_state.w_n_asist = 10 
+    st.session_state.w_m_bs = 0
+    st.session_state.w_m_usd = 0
+    st.session_state.w_s_entr = False
+    set_state(1)
+    
 col1, col2 = st.columns(2, 
                         gap="small")
 with col1:
     id_liderazgo = st.text_input(
                                 label='id liderazgo',
-                                value=liderazgo.iloc[0, 1],
+                                value=st.session_state.liderazgo.iloc[0, 1],
                                 disabled=True,
                  )
 with col2:
     nombre = st.text_input(
                                 label='nombre',
-                                value=liderazgo.iloc[0, 2],
+                                value=st.session_state.liderazgo.iloc[0, 2],
                                 disabled=True,
                  )
 
@@ -66,9 +80,10 @@ col6, col7 = st.columns(2, gap="small")
 
 with col6:
     expositor = st.text_input(
-                                label='expositor',
-                                disabled=False,
-                                placeholder='ingrese el nombre del expositor del tema')
+                              label='expositor',
+                              disabled=False,
+                              key='w_exp',
+                              placeholder='ingrese el nombre del expositor del tema')
 
 with col7:
     temas = temas().copy()
@@ -79,17 +94,16 @@ with col7:
                                             placeholder="seleccionar..",)
     tema_select = str.strip(tema_select.split('|')[0]) if not tema_select==None else ''
 
-numero_asistentes = st.slider("número de asistentes", 0, 100, 10)
-bs = st.number_input("ingrese el monto en bolívares.")
-usd = st.number_input("ingrese el monto en dólares.")
+numero_asistentes = st.slider("número de asistentes", 0, 100, key='w_n_asist')
+bs = st.number_input("ingrese el monto en bolívares.", key='w_m_bs')
+usd = st.number_input("ingrese el monto en dólares.", key='w_m_usd')
 
-sobre_entregado = st.checkbox("sobre entregado?")
-if sobre_entregado:
-   sobre_entregado=True
+sobre_entregado = st.checkbox("sobre entregado?", key='w_s_entr')
    
 observ = st.text_input(
                       label='observaciones',
                       disabled=False,
+                      key="w_observ",
                       placeholder='ingrese las observaciones')
 
 registro = [(None, 
@@ -106,8 +120,24 @@ registro = [(None,
              sobre_entregado,
              observ)]  
 
-if st.button("agregar"):
+if st.button('agregar'):
     data.insert_hist_celulas(registro)
+    set_state(3)
+
+#if st.session_state.stage >= 1 and st.session_state.stage != 3:
+#    st.button('agregar', on_click=agregar_registro, args=[3])
+    
+if st.session_state.stage >= 3:
     st.info('Registro insertado.')
-    time.sleep(3)
+    col1, col2 = st.columns([0.1, 0.1])
+    with col1:
+        col1.button("Continuar con otro registro?", on_click=set_state, args=[0])
+    with col2:
+        col2.button("ir a estadisticas", on_click=set_state, args=[4])
+        
+if st.session_state.stage == 4: 
+    del st.session_state.stage       
+    st.switch_page("pages/page5.py")
+    
+    
 

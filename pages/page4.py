@@ -40,7 +40,7 @@ with col2:
 col3, col4, col5 = st.columns(3, gap="small")
 
 with col3:
-    fecha_celula = st.date_input("fecha célula")
+    fecha_celula = st.date_input("fecha dicipulado")
 with col4:
     fecha_recibido = st.date_input("fecha recibido")
 with col5:
