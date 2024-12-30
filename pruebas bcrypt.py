@@ -1,10 +1,10 @@
-
 import bcrypt
+
 # from gestion_user.control_usuarios import aut_user
 
 
-txt = 'user002'
-pw = txt.encode('utf-8')
+txt = "user002"
+pw = txt.encode("utf-8")
 sal = bcrypt.gensalt()
 
 encript = bcrypt.hashpw(pw, sal)
