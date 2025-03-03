@@ -89,7 +89,7 @@ id_celula = st.selectbox(
     placeholder="seleccionar..",
 )
 
-id_celula = str.strip(id_celula.split("|")[0]) if not id_celula == None else ""
+id_celula = str.strip(id_celula.split("|")[0]) if id_celula is not None else ""
 
 col6, col7 = st.columns(2, gap="small")
 
@@ -111,7 +111,7 @@ with col7:
         placeholder="seleccionar..",
     )
     tema_select = (
-        str.strip(tema_select.split("|")[0]) if not tema_select == None else ""
+        str.strip(tema_select.split("|")[0]) if tema_select is not None else ""
     )
 
 numero_asistentes = st.slider("número de asistentes", 0, 100, key="w_n_asist")
