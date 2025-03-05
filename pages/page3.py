@@ -99,6 +99,7 @@ with col6:
         disabled=False,
         key="w_exp",
         placeholder="ingrese el nombre del expositor del tema",
+        autocomplete="on",
     )
 
 with col7:
@@ -125,6 +126,7 @@ observ = st.text_input(
     disabled=False,
     key="w_observ",
     placeholder="ingrese las observaciones",
+    autocomplete="on",
 )
 
 registro = [

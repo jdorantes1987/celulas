@@ -87,6 +87,7 @@ with col7:
         key="w_exp",
         disabled=False,
         placeholder="ingrese el nombre del expositor del tema.",
+        autocomplete="on",
     )
 with col8:
     tema = st.text_input(
@@ -94,6 +95,7 @@ with col8:
         key="w_tema",
         disabled=False,
         placeholder="ingrese el tema impartido.",
+        autocomplete="on",
     )
 
 numero_asistentes = st.slider(
@@ -114,6 +116,7 @@ observ = st.text_input(
     key="w_observ",
     disabled=False,
     placeholder="ingrese las observaciones",
+    autocomplete="on",
 )
 
 registro = [
