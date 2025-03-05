@@ -101,7 +101,7 @@ with st.expander("Activas"):
     grouped2 = last_day_of_month.groupby(
         ["cod_red", "anfitriones", "c_lider", "direccion"]
     )[["fecha", "dias_transc"]].max()
-    st.dataframe(grouped2.reset_index(), use_container_width=True)
+    st.dataframe(grouped2.reset_index(), use_container_width=True, hide_index=True)
 
     st.header("-> Histórico de celulas:")
     hist_celulas = celulas_activas_historico().copy()
