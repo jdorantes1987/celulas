@@ -34,7 +34,7 @@ st.title("Células")
 
 with st.expander("Activas"):
     celulas_activas = celulas_activas()
-    st.dataframe(celulas_activas, use_container_width=False, hide_index=True)
+    st.dataframe(celulas_activas, use_container_width=True, hide_index=True)
     st.header("Cantidad de células")
     col1, col2 = st.columns(2, gap="small")
     celulas_activas.rename(
@@ -45,7 +45,7 @@ with st.expander("Activas"):
         st.write("-> Por código base")
         st.dataframe(
             celulas_activas.groupby(["cod_base"])["cantidad"].count(),
-            use_container_width=False,
+            use_container_width=True,
         )
         cantidad = celulas_activas["lider"].value_counts().sum()
         st.write(f"Total cantidad de células:  {cantidad}")
@@ -53,8 +53,8 @@ with st.expander("Activas"):
     with col2:
         st.write("-> Por sub-código")
         st.dataframe(
-            celulas_activas.groupby(["cod_red", "lider"])["cantidad"].count(),
-            use_container_width=False,
+            celulas_activas.groupby(["cod_red", "lider"])["cantidad"].count().reset,
+            use_container_width=True,
         )
 
     st.header("-> Sobres por entregar:")
@@ -82,7 +82,7 @@ with st.expander("Activas"):
     sobres_por_entregar.rename(columns={"id": "cantidad"}, inplace=True)
     st.dataframe(
         sobres_por_entregar,
-        use_container_width=False,
+        use_container_width=True,
         hide_index=True,
     )
 
@@ -101,11 +101,11 @@ with st.expander("Activas"):
     grouped2 = last_day_of_month.groupby(
         ["cod_red", "anfitriones", "c_lider", "direccion"]
     )[["fecha", "dias_transc"]].max()
-    st.dataframe(grouped2, use_container_width=False)
+    st.dataframe(grouped2.reset_index(), use_container_width=True)
 
     st.header("-> Histórico de celulas:")
     hist_celulas = celulas_activas_historico().copy()
-    st.dataframe(hist_celulas, use_container_width=False, hide_index=True)
+    st.dataframe(hist_celulas, use_container_width=True, hide_index=True)
 
 
 st.title("Discipulados")
@@ -133,7 +133,7 @@ with st.expander("Datos"):
         "${:,.2f}".format
     )
     sobres_por_entregar.rename(columns={"id": "cantidad"}, inplace=True)
-    st.dataframe(sobres_por_entregar, use_container_width=False, hide_index=True)
+    st.dataframe(sobres_por_entregar, use_container_width=True, hide_index=True)
 
     st.header("-> Última actividad del mes:")
     discipulados_historico["fecha"] = to_datetime(
@@ -151,7 +151,7 @@ with st.expander("Datos"):
             "c_lider",
         ]
     )[["fecha", "dias_transc"]].max()
-    st.dataframe(grouped2, use_container_width=False)
+    st.dataframe(grouped2, use_container_width=True)
 
     st.header("-> Histórico de díscipulados:")
-    st.dataframe(discipulados_historico, use_container_width=False, hide_index=True)
+    st.dataframe(discipulados_historico, use_container_width=True, hide_index=True)
