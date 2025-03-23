@@ -138,7 +138,7 @@ registro = [
 ]
 
 if st.button("agregar"):
-    # data.insert_hist_discipulados(registro)
+    data.insert_hist_discipulados(registro)
     set_state(3)
 
 if st.session_state.stage >= 3:
