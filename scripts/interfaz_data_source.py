@@ -3,7 +3,7 @@ from abc import ABC, abstractmethod
 
 class IDataSource(ABC):
     @abstractmethod
-    def get_celulas_activas(self):
+    def get_celulas(self):
         pass
 
     @abstractmethod
@@ -19,5 +19,5 @@ class IDataSource(ABC):
         pass
 
     @abstractmethod
-    def get_celulas_activas_hist(self):
+    def get_historico_celulas(self):
         pass
