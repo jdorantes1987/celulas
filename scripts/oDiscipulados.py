@@ -15,7 +15,10 @@ class DataDiscipulados:
         return self.data.get_liderazgo_redes()
 
     def discipulados_historico(self):
-        return self.data.get_discipulados_hist()
+        return self.data.get_historico_discipulados()
+
+    def get_discipulados(self):
+        return self.data.get_discipulados()
 
     def insert_hist_discipulados(self, data):
         self.data.insert_hist_discipulados(data)

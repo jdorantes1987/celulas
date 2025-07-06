@@ -8,7 +8,7 @@ from gestion_user.usuarios_roles import ClsUsuariosRoles
 st.set_page_config(
     page_title="Células",
     layout="centered",
-    initial_sidebar_state="collapsed",
+    initial_sidebar_state="expanded",
     page_icon=":vs:",
 )
 

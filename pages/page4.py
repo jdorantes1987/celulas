@@ -1,5 +1,4 @@
 import streamlit as st
-from numpy import nan
 
 from helpers.navigation import make_sidebar
 from scripts.oDiscipulados import DataDiscipulados
@@ -42,6 +41,12 @@ def liderazgo_redes():
     return data.liderazgo_redes()
 
 
+@st.cache_data
+def get_dicipulados():
+    discipulados = data.get_discipulados()
+    return discipulados[discipulados["estatus_liderazgo"] == 1]
+
+
 liderazgo = liderazgo_activo()
 col1, col2 = st.columns(2, gap="small")
 with col1:
@@ -69,16 +74,18 @@ with col5:
 col6, col7, col8 = st.columns(3, gap="small")
 
 with col6:
-    redes = liderazgo_redes().replace(nan, "").copy()
-    redes["buscador"] = redes["cod_red"] + " | " + redes["c_lider"]
-    cod_red = st.selectbox(
-        "Lista de redes:",
-        redes["buscador"],
+    discipulados = get_dicipulados()
+    discipulados["buscador"] = discipulados["id_cod"] + " | " + discipulados["c_lider"]
+    cod_discipulado = st.selectbox(
+        "Lista de discipulados:",
+        discipulados["buscador"],
         index=None,
         placeholder="seleccionar..",
     )
 
-    cod_red = str.strip(cod_red.split("|")[0]) if cod_red is not None else ""
+    cod_discipulado = (
+        str.strip(cod_discipulado.split("|")[0]) if cod_discipulado is not None else ""
+    )
 
 
 with col7:
@@ -123,10 +130,10 @@ registro = [
     (
         None,
         id_liderazgo,
+        cod_discipulado,
         fecha_celula,
         fecha_recibido,
         fecha_entregado,
-        cod_red,
         expositor,
         tema,
         numero_asistentes,

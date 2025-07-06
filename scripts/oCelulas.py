@@ -9,14 +9,15 @@ class DataCelulas:
         self.data = DB(connect(db_path))
 
     def celulas_activas(self):
-        return self.data.get_celulas_activas()
+        data = self.data.get_celulas()
+        return data[data["estatus_celula"] == 1]
 
     def sobres_por_entregar(self):
         hist_celulas_activas = self.celulas_activas_hist()
         return hist_celulas_activas[hist_celulas_activas["sobre_entregado"] == 0]
 
     def celulas_activas_hist(self):
-        return self.data.get_celulas_activas_hist()
+        return self.data.get_historico_celulas()
 
     def liderazgo(self):
         return self.data.get_liderazgo()
