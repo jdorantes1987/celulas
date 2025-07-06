@@ -33,19 +33,19 @@ class BD_SQLite_Celulas(IDataSource):
 
     def get_historico_celulas(self):
         sql = """
-                SELECT hcl.*, c.anfitriones, c.id_cod, lxc.c_lider ,c.direccion, c.estatus as estatus_celula, lxc.estatus as estatus_liderazgo
+                SELECT hcl.*, t.descrip, c.anfitriones, c.id_cod, lxc.cod_red, lxc.c_lider ,c.direccion, c.estatus as estatus_celula, lxc.estatus as estatus_liderazgo
                 FROM hist_celulas AS hcl LEFT JOIN celulas AS c ON hcl.id_celula=c.id_celula LEFT JOIN (
                     SELECT c1.id_liderazgo, c1.id_cod, c1.cod_red, c1.nombre_liderazgo as c_lider,
                     IFNULL(c1.cod_base, c1.cod_red) as cod_base,
                     IFNULL(c2.cod_red, c1.cod_red) as c_lider_red,
                     IFNULL(c2.nombre_liderazgo, c1.nombre_liderazgo) as nombre_lider, c1.estatus
-                FROM ((SELECT * FROM codigos as hl LEFT JOIN liderazgo_x_codigo AS lxc ON hl.cod_red=lxc.id_codigo LEFT JOIN liderazgo AS l ON  hl.id_liderazgo=l.id_liderazgo) as c1
-                    LEFT JOIN
-                    (SELECT * FROM codigos as hl LEFT JOIN liderazgo_x_codigo AS lxc ON hl.cod_red=lxc.id_codigo LEFT JOIN liderazgo AS l ON  hl.id_liderazgo=l.id_liderazgo) as c2
-                    ON
-                    c1.cod_lider=c2.cod_red AND c1.id_liderazgo=c2.id_liderazgo) as lxc
-                    LEFT JOIN liderazgo l ON lxc.id_liderazgo=l.id_liderazgo
-                ORDER BY c1.cod_base, c1.cod_red) AS lxc ON c.id_cod=lxc.id_cod
+                    FROM ((SELECT * FROM codigos as hl LEFT JOIN liderazgo_x_codigo AS lxc ON hl.cod_red=lxc.id_codigo LEFT JOIN liderazgo AS l ON  hl.id_liderazgo=l.id_liderazgo) as c1
+                        LEFT JOIN
+                        (SELECT * FROM codigos as hl LEFT JOIN liderazgo_x_codigo AS lxc ON hl.cod_red=lxc.id_codigo LEFT JOIN liderazgo AS l ON  hl.id_liderazgo=l.id_liderazgo) as c2
+                        ON
+                        c1.cod_lider=c2.cod_red AND c1.id_liderazgo=c2.id_liderazgo) as lxc
+                        LEFT JOIN liderazgo l ON lxc.id_liderazgo=l.id_liderazgo
+                    ORDER BY c1.cod_base, c1.cod_red) AS lxc ON c.id_cod=lxc.id_cod LEFT JOIN temas AS t ON hcl.id_tema = t.id_tema
             """
         return read_sql(sql, self.conexion)
 

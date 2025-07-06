@@ -13,10 +13,10 @@ class DataCelulas:
         return data[data["estatus_celula"] == 1]
 
     def sobres_por_entregar(self):
-        hist_celulas_activas = self.celulas_activas_hist()
+        hist_celulas_activas = self.celuas_historico()
         return hist_celulas_activas[hist_celulas_activas["sobre_entregado"] == 0]
 
-    def celulas_activas_hist(self):
+    def celuas_historico(self):
         return self.data.get_historico_celulas()
 
     def liderazgo(self):

@@ -21,8 +21,14 @@ def celulas_activas():
 
 
 @st.cache_data
+def celuas_historico():
+    return oCelulas.celuas_historico()
+
+
+@st.cache_data
 def celulas_activas_historico():
-    return oCelulas.celulas_activas_hist()
+    data = oCelulas.celuas_historico()
+    return data[data["estatus_celula"] == 1]
 
 
 @st.cache_data
@@ -43,7 +49,7 @@ st.title("Estadísticas Generales")
 col1, col2 = st.columns(2)
 
 with col1:
-    st.subheader("Células activas")
+    st.subheader("🏠 Células activas")
     celulas_activas_df = celulas_activas()
     st.metric(
         label="Células activas",
@@ -51,17 +57,15 @@ with col1:
     )
 
 with col2:
-    st.subheader("Discipulados activos")
+    st.subheader("🎯Discipulados activos")
     dicipulados_activos_df = get_dicipulados_activos()
     st.metric(
         label="Discipulados activos",
         value=dicipulados_activos_df.shape[0],
     )
 
-st.markdown("---")
-
 # Sección de detalles históricos (opcional)
-with st.expander("Ver células activas"):
+with st.expander("🏠 Ver células activas"):
     historico = celulas_activas().copy()
     # Ocultar algunas columnas
     historico = historico.drop(
@@ -69,7 +73,82 @@ with st.expander("Ver células activas"):
     )
     st.dataframe(historico, use_container_width=True, hide_index=True)
 
-with st.expander("Ver discipulados activos"):
+with st.expander("📆 Ver ultima actividad de células"):
+    celula_con_activ = celulas_activas_historico().copy()
+    celula_con_activ["fecha"] = to_datetime(celula_con_activ["fecha"], yearfirst=True)
+    grouped = celula_con_activ.groupby(
+        ["cod_red", "anfitriones", "c_lider", "direccion"]
+    )
+    last_day_of_month = grouped["fecha"].max().reset_index()
+    last_day_of_month["dias_transc"] = (
+        today - last_day_of_month["fecha"]
+    ).dt.days  # Dias transcurridos entre la ultima fecha al dia de hoy
+    last_day_of_month["fecha"] = last_day_of_month["fecha"].dt.date
+    grouped2 = last_day_of_month.groupby(
+        ["cod_red", "anfitriones", "c_lider", "direccion"]
+    )[["fecha", "dias_transc"]].max()
+    st.dataframe(grouped2.reset_index(), use_container_width=True, hide_index=True)
+
+with st.expander("📊 Ver historico de celulas"):
+    columnas_historico_celulas = [
+        "id_celula",
+        "fecha",
+        "fecha_recibido",
+        "fecha_entregado",
+        "id_tema",
+        "descrip",
+        "cod_red",
+        "c_lider",
+        "anfitriones",
+        "expositor",
+        "direccion",
+        "asistentes",
+        "monto_bs",
+        "monto_usd",
+        "sobre_entregado",
+        "estatus_celula",
+        "estatus_liderazgo",
+    ]
+    hist_celulas = celuas_historico().copy()
+
+    # Eliminar columnas innecesarias
+    hist_celulas = hist_celulas.drop(columns=["id", "id_cod", "id_liderazgo"], axis=1)
+
+    # Formatear columnas de montos
+    hist_celulas["monto_bs"] = hist_celulas["monto_bs"].map(lambda x: f"{x:,.2f}")
+    hist_celulas["monto_usd"] = hist_celulas["monto_usd"].map(lambda x: f"{x:,.2f}")
+    hist_celulas = hist_celulas[columnas_historico_celulas]
+    st.dataframe(
+        hist_celulas,
+        column_config={
+            "fecha": st.column_config.DateColumn(
+                "Fecha de la célula", format="DD/MM/YYYY"
+            ),
+            "fecha_recibido": st.column_config.DateColumn(
+                "Fecha recibido", format="DD/MM/YYYY"
+            ),
+            "fecha_entregado": st.column_config.DateColumn(
+                "Fecha entregado", format="DD/MM/YYYY"
+            ),
+            "descrip": st.column_config.TextColumn("Tema"),
+            "cod_red": st.column_config.TextColumn("Código de red"),
+            "c_lider": st.column_config.TextColumn("Líder"),
+            "anfitriones": st.column_config.TextColumn("Anfitriones"),
+            "expositor": st.column_config.TextColumn("Expositor"),
+            "direccion": st.column_config.TextColumn("Dirección"),
+            "asistentes": st.column_config.NumberColumn("Asistentes"),
+            "monto_bs": st.column_config.NumberColumn("Monto Bs", format="%s"),
+            "monto_usd": st.column_config.NumberColumn("Monto USD", format="$%s"),
+            "sobre_entregado": st.column_config.CheckboxColumn("Sobre entregado?"),
+            "estatus_celula": st.column_config.CheckboxColumn("Estatus Célula"),
+            "estatus_liderazgo": st.column_config.CheckboxColumn("Estatus Liderazgo"),
+        },
+        use_container_width=True,
+        hide_index=True,
+    )
+
+st.markdown("---")
+with st.expander("🎯 Ver discipulados activos"):
     discipulados = get_dicipulados_activos().copy()
     # Ocultar algunas columnas
     discipulados = discipulados.drop(
