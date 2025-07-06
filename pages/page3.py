@@ -29,8 +29,9 @@ def temas():
     return data.temas()
 
 
-if "stage" not in st.session_state:
+if "stage" not in st.session_state or "liderazgo" not in st.session_state:
     st.session_state.stage = 0
+    st.session_state.liderazgo = None
 
 
 def set_state(i):

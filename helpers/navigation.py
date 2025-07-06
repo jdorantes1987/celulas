@@ -50,6 +50,8 @@ def _extracted_from_make_sidebar():
     if st.button("Cerrar sesión"):
         logout()
 
+    st.cache_data.clear()
+
 
 def logout():
     st.session_state.logged_in = False

@@ -10,148 +10,77 @@ from scripts.oDiscipulados import DataDiscipulados
 st.set_page_config(page_title="Estadísticas Generales", layout="wide", page_icon="⚡")
 
 make_sidebar()
-data_celulas = DataCelulas()
-data_discipulados = DataDiscipulados()
+oCelulas = DataCelulas()
+oDicipulados = DataDiscipulados()
 today = datetime.datetime.now()
 
 
 @st.cache_data
 def celulas_activas():
-    return data_celulas.celulas_activas()
+    return oCelulas.celulas_activas()
 
 
 @st.cache_data
 def celulas_activas_historico():
-    return data_celulas.celulas_activas_hist()
+    return oCelulas.celulas_activas_hist()
 
 
 @st.cache_data
-def discipulados_historico():
-    return data_discipulados.discipulados_historico()
+def get_dicipulados():
+    return oDicipulados.get_discipulados()
 
 
-st.title("Células")
+@st.cache_data
+def get_dicipulados_activos():
+    data = oDicipulados.get_discipulados()
+    return data[data["estatus_liderazgo"] == 1]
 
-with st.expander("Activas"):
-    celulas_activas = celulas_activas()
-    st.dataframe(celulas_activas, use_container_width=True, hide_index=True)
-    st.header("Cantidad de células")
-    col1, col2 = st.columns(2, gap="small")
-    celulas_activas.rename(
-        columns={"c_lider": "lider", "id_celula": "cantidad"}, inplace=True
+
+# Título principal
+st.title("Estadísticas Generales")
+
+# Layout profesional con columnas
+col1, col2 = st.columns(2)
+
+with col1:
+    st.subheader("Células activas")
+    celulas_activas_df = celulas_activas()
+    st.metric(
+        label="Células activas",
+        value=celulas_activas_df.shape[0],
     )
 
-    with col1:
-        st.write("-> Por código base")
-        st.dataframe(
-            celulas_activas.groupby(["cod_base"])["cantidad"].count(),
-            use_container_width=True,
-        )
-        cantidad = celulas_activas["lider"].value_counts().sum()
-        st.write(f"Total cantidad de células:  {cantidad}")
-
-    with col2:
-        st.write("-> Por sub-código")
-        st.dataframe(
-            celulas_activas.groupby(["cod_red", "lider"])["cantidad"].count(),
-            use_container_width=True,
-        )
-
-    st.header("-> Sobres por entregar:")
-    sobres_por_entregar = (
-        DataCelulas()
-        .sobres_por_entregar()
-        .groupby(["cod_red", "c_lider"])
-        .agg({"monto_bs": "sum", "monto_usd": "sum", "id": "count"})
-        .reset_index()
-    )
-    sobres_por_entregar.loc["999"] = [
-        "TOTAL",
-        " ",
-        sobres_por_entregar["monto_bs"].sum(),
-        sobres_por_entregar["monto_usd"].sum(),
-        sobres_por_entregar["id"].sum(),
-    ]
-    sobres_por_entregar = sobres_por_entregar.reset_index(drop=True)
-    sobres_por_entregar["monto_bs"] = sobres_por_entregar["monto_bs"].apply(
-        "{:,.2f}".format
-    )
-    sobres_por_entregar["monto_usd"] = sobres_por_entregar["monto_usd"].apply(
-        "${:,.2f}".format
-    )
-    sobres_por_entregar.rename(columns={"id": "cantidad"}, inplace=True)
-    st.dataframe(
-        sobres_por_entregar,
-        use_container_width=True,
-        hide_index=True,
+with col2:
+    st.subheader("Discipulados activos")
+    dicipulados_activos_df = get_dicipulados_activos()
+    st.metric(
+        label="Discipulados activos",
+        value=dicipulados_activos_df.shape[0],
     )
 
-    st.header("-> Última actividad del mes:")
+st.markdown("---")
 
-    celula_con_activ = celulas_activas_historico().copy()
-    celula_con_activ["fecha"] = to_datetime(celula_con_activ["fecha"], yearfirst=True)
-    grouped = celula_con_activ.groupby(
-        ["cod_red", "anfitriones", "c_lider", "direccion"]
+# Sección de detalles históricos (opcional)
+with st.expander("Ver células activas"):
+    historico = celulas_activas().copy()
+    # Ocultar algunas columnas
+    historico = historico.drop(
+        columns=["id_cod", "estatus_celula", "id_liderazgo", "estatus_liderazgo"]
     )
-    last_day_of_month = grouped["fecha"].max().reset_index()
-    last_day_of_month["dias_transc"] = (
-        today - last_day_of_month["fecha"]
-    ).dt.days  # Dias transcurridos entre la ultima fecha al dia de hoy
-    last_day_of_month["fecha"] = last_day_of_month["fecha"].dt.date
-    grouped2 = last_day_of_month.groupby(
-        ["cod_red", "anfitriones", "c_lider", "direccion"]
-    )[["fecha", "dias_transc"]].max()
-    st.dataframe(grouped2.reset_index(), use_container_width=True, hide_index=True)
+    st.dataframe(historico, use_container_width=True, hide_index=True)
 
-    st.header("-> Histórico de celulas:")
-    hist_celulas = celulas_activas_historico().copy()
-    st.dataframe(hist_celulas, use_container_width=True, hide_index=True)
-
-
-st.title("Discipulados")
-with st.expander("Datos"):
-    discipulados_historico = discipulados_historico()
-    st.header("-> Sobres por entregar:")
-    sobres = discipulados_historico[discipulados_historico["sobre_entregado"] == 0]
-    sobres_por_entregar = (
-        sobres.groupby(["cod_red", "c_lider"])
-        .agg({"monto_bs": "sum", "monto_usd": "sum", "id": "count"})
-        .reset_index()
-    )
-    sobres_por_entregar.loc["999"] = [
-        "TOTAL",
-        " ",
-        sobres_por_entregar["monto_bs"].sum(),
-        sobres_por_entregar["monto_usd"].sum(),
-        sobres_por_entregar["id"].sum(),
-    ]
-    sobres_por_entregar = sobres_por_entregar.reset_index(drop=True)
-    sobres_por_entregar["monto_bs"] = sobres_por_entregar["monto_bs"].apply(
-        "{:,.2f}".format
-    )
-    sobres_por_entregar["monto_usd"] = sobres_por_entregar["monto_usd"].apply(
-        "${:,.2f}".format
-    )
-    sobres_por_entregar.rename(columns={"id": "cantidad"}, inplace=True)
-    st.dataframe(sobres_por_entregar, use_container_width=True, hide_index=True)
-
-    st.header("-> Última actividad del mes:")
-    discipulados_historico["fecha"] = to_datetime(
-        discipulados_historico["fecha"], yearfirst=True
-    )
-    grouped = discipulados_historico.groupby(["cod_red", "c_lider"])
-    last_day_of_month = grouped["fecha"].max().reset_index()
-    last_day_of_month["dias_transc"] = (
-        today - last_day_of_month["fecha"]
-    ).dt.days  # Dias transcurridos entre la ultima fecha al dia de hoy
-    last_day_of_month["fecha"] = last_day_of_month["fecha"].dt.date
-    grouped2 = last_day_of_month.groupby(
-        [
-            "cod_red",
-            "c_lider",
+with st.expander("Ver discipulados activos"):
+    discipulados = get_dicipulados_activos().copy()
+    # Ocultar algunas columnas
+    discipulados = discipulados.drop(
+        columns=[
+            "id_discipulado",
+            "id_cod",
+            "cod_base",
+            "c_lider_red",
+            "id_liderazgo",
+            "estatus_liderazgo",
+            "nombre_lider",
         ]
-    )[["fecha", "dias_transc"]].max()
-    st.dataframe(grouped2, use_container_width=True)
-
-    st.header("-> Histórico de díscipulados:")
-    st.dataframe(discipulados_historico, use_container_width=True, hide_index=True)
+    )
+    st.dataframe(discipulados, use_container_width=True, hide_index=True)
