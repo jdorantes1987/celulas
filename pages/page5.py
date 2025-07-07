@@ -168,29 +168,30 @@ with st.expander("🎯 Ver discipulados activos"):
 
 with st.expander("Ver datos sheet"):
     import os
-    import toml
 
-    # Construir la ruta absoluta al archivo de configuración
-    config_path = os.path.abspath(
-        os.path.join(os.path.dirname(__file__), "..", ".streamlit", "config.toml")
-    )
-    config = toml.load(config_path)
+    # import toml
+
+    # # Construir la ruta absoluta al archivo de configuración
+    # config_path = os.path.abspath(
+    #     os.path.join(os.path.dirname(__file__), "..", ".streamlit", "config.toml")
+    # )
+    # config = toml.load(config_path)
 
     # Acceso seguro a las claves
-    if "google_sheets" not in config:
-        st.error(
-            "No se encontró la sección [google_sheets] en el archivo de configuración."
-        )
-    else:
-        SPREADSHEET_ID = config["google_sheets"]["CELULAS_ID"]
-        FILE_CELULAS_NAME = config["google_sheets"]["FILE_CELULAS_NAME"]
-        SHEET_NAME = config["google_sheets"]["SHEET_TEMAS"]
-        CREDENTIALS_DICT = dict(config["google_service_account"])
+    # if "google_sheets" not in config:
+    #     st.error(
+    #         "No se encontró la sección [google_sheets] en el archivo de configuración."
+    #     )
+    # else:
+    SPREADSHEET_ID = st.secrets.google_sheets.CELULAS_ID
+    FILE_CELULAS_NAME = st.secrets.google_sheets.FILE_CELULAS_NAME
+    SHEET_NAME = st.secrets.google_sheets.SHEET_CELULAS
+    CREDENTIALS_DICT = dict(st.secrets.google_service_account)
 
-        oTemas = ManagerSheets(
-            file_sheet_name=FILE_CELULAS_NAME,
-            spreadsheet_id=SPREADSHEET_ID,
-            credentials_file=CREDENTIALS_DICT,
-        )
-        df = oTemas.get_data_hoja(sheet_name=SHEET_NAME)
-        st.dataframe(df, use_container_width=True, hide_index=True)
+    oTemas = ManagerSheets(
+        file_sheet_name=FILE_CELULAS_NAME,
+        spreadsheet_id=SPREADSHEET_ID,
+        credentials_file=CREDENTIALS_DICT,
+    )
+    df = oTemas.get_data_hoja(sheet_name=SHEET_NAME)
+    st.dataframe(df, use_container_width=True, hide_index=True)
