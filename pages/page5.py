@@ -6,6 +6,7 @@ from pandas import to_datetime
 from helpers.navigation import make_sidebar
 from scripts.oCelulas import DataCelulas
 from scripts.oDiscipulados import DataDiscipulados
+from scripts.data_sheets import ManagerSheets
 
 st.set_page_config(page_title="Estadísticas Generales", layout="wide", page_icon="⚡")
 
@@ -163,3 +164,22 @@ with st.expander("🎯 Ver discipulados activos"):
         ]
     )
     st.dataframe(discipulados, use_container_width=True, hide_index=True)
+
+
+with st.expander("Ver datos sheet"):
+    import toml
+
+    # Carga las variables de entorno desde un archivo .toml
+    config = toml.load("config.toml")
+    SPREADSHEET_ID = config.get("google_sheets", {}).get("CELULAS_ID")
+    FILE_CELULAS_NAME = config.get("google_sheets", {}).get("FILE_CELULAS_NAME")
+    SHEET_NAME = config.get("google_sheets", {}).get("SHEET_TEMAS")
+    CREDENTIALS_FILE = dict(config["google_service_account"])
+
+    oTemas = ManagerSheets(
+        file_sheet_name=FILE_CELULAS_NAME,
+        spreadsheet_id=SPREADSHEET_ID,
+        credentials_file=CREDENTIALS_FILE,
+    )
+    df = oTemas.get_data_hoja(sheet_name=SHEET_NAME)
+    st.dataframe(df, use_container_width=True, hide_index=True)
