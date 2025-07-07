@@ -6,6 +6,9 @@ __pycache__/
 # C extensions
 *.so
 
+# secret keys, tokens, passwords, etc.
+*key.json
+
 # .streamlit config file
 .streamlit/config.toml
 .streamlit/secrets.toml
