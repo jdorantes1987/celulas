@@ -167,7 +167,7 @@ with st.expander("🎯 Ver discipulados activos"):
 
 
 with st.expander("Ver datos sheet"):
-    import os
+    # import os
 
     # import toml
 
@@ -184,12 +184,12 @@ with st.expander("Ver datos sheet"):
     #     )
     # else:
     SPREADSHEET_ID = st.secrets.google_sheets.CELULAS_ID
-    FILE_CELULAS_NAME = st.secrets.google_sheets.FILE_CELULAS_NAME
-    SHEET_NAME = st.secrets.google_sheets.SHEET_CELULAS
+    FILE_NAME = st.secrets.google_sheets.FILE_NAME
+    SHEET_NAME = st.secrets.google_sheets.SHEET_HIST_CELULAS
     CREDENTIALS_DICT = dict(st.secrets.google_service_account)
 
     oTemas = ManagerSheets(
-        file_sheet_name=FILE_CELULAS_NAME,
+        file_sheet_name=FILE_NAME,
         spreadsheet_id=SPREADSHEET_ID,
         credentials_file=CREDENTIALS_DICT,
     )
