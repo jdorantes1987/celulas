@@ -170,7 +170,7 @@ with st.expander("Ver datos sheet"):
     import toml
 
     # Carga las variables de entorno desde un archivo .toml
-    config = toml.load("config.toml")
+    config = toml.load(r".streamlit\\config.toml")
     SPREADSHEET_ID = config.get("google_sheets", {}).get("CELULAS_ID")
     FILE_CELULAS_NAME = config.get("google_sheets", {}).get("FILE_CELULAS_NAME")
     SHEET_NAME = config.get("google_sheets", {}).get("SHEET_TEMAS")
