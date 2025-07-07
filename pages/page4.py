@@ -1,7 +1,7 @@
 import streamlit as st
 
 from helpers.navigation import make_sidebar
-from scripts.oDiscipulados import DataDiscipulados
+from scripts.Discipulados import DataDiscipulados
 
 st.set_page_config(
     page_title="Discipulados - Registro de sobres", layout="wide", page_icon="⚡"

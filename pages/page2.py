@@ -1,7 +1,7 @@
 import streamlit as st
 
 from helpers.navigation import make_sidebar
-from scripts.oCelulas import DataCelulas
+from scripts.Celulas import DataCelulas
 
 st.set_page_config(page_title="Células: Inicio", layout="wide", page_icon="⚡")
 make_sidebar()

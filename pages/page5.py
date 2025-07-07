@@ -4,8 +4,8 @@ import streamlit as st
 from pandas import to_datetime
 
 from helpers.navigation import make_sidebar
-from scripts.oCelulas import DataCelulas
-from scripts.oDiscipulados import DataDiscipulados
+from scripts.Celulas import DataCelulas
+from scripts.Discipulados import DataDiscipulados
 from scripts.data_sheets import ManagerSheets
 
 st.set_page_config(page_title="Estadísticas Generales", layout="wide", page_icon="⚡")
@@ -33,12 +33,12 @@ def celulas_activas_historico():
 
 
 @st.cache_data
-def get_dicipulados():
+def get_discipulados():
     return oDicipulados.get_discipulados()
 
 
 @st.cache_data
-def get_dicipulados_activos():
+def get_discipulados_activos():
     data = oDicipulados.get_discipulados()
     return data[data["estatus_liderazgo"] == 1]
 
@@ -59,7 +59,7 @@ with col1:
 
 with col2:
     st.subheader("🎯Discipulados activos")
-    dicipulados_activos_df = get_dicipulados_activos()
+    dicipulados_activos_df = get_discipulados_activos()
     st.metric(
         label="Discipulados activos",
         value=dicipulados_activos_df.shape[0],
@@ -119,6 +119,9 @@ with st.expander("📊 Ver historico de celulas"):
     hist_celulas["monto_bs"] = hist_celulas["monto_bs"].map(lambda x: f"{x:,.2f}")
     hist_celulas["monto_usd"] = hist_celulas["monto_usd"].map(lambda x: f"{x:,.2f}")
     hist_celulas = hist_celulas[columnas_historico_celulas]
+    hist_celulas.sort_values(
+        by=["fecha", "cod_red"], ascending=[False, True], inplace=True
+    )
     st.dataframe(
         hist_celulas,
         column_config={
@@ -150,7 +153,7 @@ with st.expander("📊 Ver historico de celulas"):
 
 st.markdown("---")
 with st.expander("🎯 Ver discipulados activos"):
-    discipulados = get_dicipulados_activos().copy()
+    discipulados = get_discipulados_activos().copy()
     # Ocultar algunas columnas
     discipulados = discipulados.drop(
         columns=[
@@ -164,7 +167,6 @@ with st.expander("🎯 Ver discipulados activos"):
         ]
     )
     st.dataframe(discipulados, use_container_width=True, hide_index=True)
-
 
 with st.expander("Ver datos sheet"):
     # import os
