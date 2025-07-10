@@ -44,9 +44,16 @@ class ManagerSheets:
 
     def get_service(self):
         scopes = ["https://www.googleapis.com/auth/spreadsheets"]
-        creds = Credentials.from_service_account_file(
-            self.credentials_file, scopes=scopes
-        )
+        # Cambia aquí: usa from_json_keyfile_dict si credentials_file es un dict
+        if isinstance(self.credentials_file, dict):
+            creds = Credentials.from_service_account_info(
+                self.credentials_file, scopes=scopes
+            )
+        else:
+            creds = Credentials.from_service_account_file(
+                self.credentials_file, scopes=scopes
+            )
+
         return build("sheets", "v4", credentials=creds)
 
 
