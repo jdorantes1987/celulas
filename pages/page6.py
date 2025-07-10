@@ -34,8 +34,6 @@ def get_temas():
 st.title("Temas de las Casas de Bendición")
 
 df = get_temas()
-st.dataframe(df, use_container_width=True, hide_index=True)
-
 
 # Layout profesional con columnas
 col1, col2 = st.columns(2)
@@ -86,6 +84,19 @@ if submit_button:
             st.error(response["message"])
     except Exception as e:
         st.error(f"Error al agregar el tema: {e}")
+
+st.dataframe(
+    df,
+    column_config={
+        "id_tema": st.column_config.TextColumn("ID del tema"),
+        "descrip": st.column_config.TextColumn("Descripción"),
+        "fecha_ini": st.column_config.DateColumn("Fecha de inicio"),
+        "fecha_fin": st.column_config.DateColumn("Fecha de fin"),
+        "versiculo": st.column_config.TextColumn("Versículo"),
+    },
+    use_container_width=True,
+    hide_index=True,
+)
 
 # Footer
 st.markdown(
