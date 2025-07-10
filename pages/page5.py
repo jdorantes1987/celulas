@@ -44,7 +44,7 @@ def get_discipulados_activos():
 
 
 # Título principal
-st.title("Estadísticas Generales")
+st.title("📊 Estadísticas Generales")
 
 # Layout profesional con columnas
 col1, col2 = st.columns(2)
@@ -90,7 +90,8 @@ with st.expander("📆 Ver ultima actividad de células"):
     )[["fecha", "dias_transc"]].max()
     st.dataframe(grouped2.reset_index(), use_container_width=True, hide_index=True)
 
-with st.expander("📊 Ver historico de celulas"):
+# expander con icono ver
+with st.expander("📋 Ver historico de celulas"):
     columnas_historico_celulas = [
         "id_celula",
         "fecha",
