@@ -81,7 +81,7 @@ if submit_button:
         print(response)  # Para depuración
         if response["success"]:
             st.success(f"Tema '{tema}' agregado exitosamente.")
-            st.experimental_rerun()  # Recargar la página para mostrar el nuevo tema
+            st.rerun()  # Recargar la página para mostrar el nuevo tema
         else:
             st.error(response["message"])
     except Exception as e:
