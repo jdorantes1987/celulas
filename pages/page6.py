@@ -78,6 +78,7 @@ if submit_button:
                 versiculo,
             ]
         )
+        print(response)  # Para depuración
         if response["success"]:
             st.success(f"Tema '{tema}' agregado exitosamente.")
             st.experimental_rerun()  # Recargar la página para mostrar el nuevo tema
