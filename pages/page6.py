@@ -75,6 +75,8 @@ with col2:
         st.metric(label="No hay temas registrados", value="0")
 
 df.sort_values(by="fecha_ini", ascending=False, inplace=True)
+
+st.subheader("📋 Lista de temas")
 st.dataframe(
     df,
     column_config={
@@ -88,15 +90,17 @@ st.dataframe(
     hide_index=True,
 )
 
-st.subheader("➕ Agregar nuevo tema")
+st.subheader("📌 Agregar un nuevo tema")
 # Formulario para agregar un nuevo tema
 with st.form("agregar_tema"):
     id_tema = st.text_input(
         "ID del tema", key="id_tema", placeholder="Ej. TM20250701001"
     )
+    st.session_state.id_tema.upper()  # Asegurarse de que el ID esté en mayúsculas
     tema = st.text_input(
         "Tema", key="tema", placeholder="Ej. LA IMPORTANCIA DE LA ORACIÓN"
     )
+    st.session_state.tema.upper()  # Asegurarse de que el tema esté en mayúsculas
     fecha_inicio = st.date_input("Fecha de inicio", key="fecha_inicio")
     fecha_fin = st.date_input("Fecha de fin", key="fecha_fin")
     versiculo = st.text_input("Versículo", key="versiculo", placeholder="Ej. Pv 4:23")
