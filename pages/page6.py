@@ -94,13 +94,17 @@ st.subheader("📌 Agregar un nuevo tema")
 # Formulario para agregar un nuevo tema
 with st.form("agregar_tema"):
     id_tema = st.text_input(
-        "ID del tema", key="id_tema", placeholder="Ej. TM20250701001"
+        "ID del tema",
+        key="id_tema",
+        placeholder="Ej. 'TM20250701' para el 1er tema del mes",
     )
-    st.session_state.id_tema.upper()  # Asegurarse de que el ID esté en mayúsculas
+    id_tema = id_tema.upper()  # Asegurarse de que el ID esté en mayúsculas
+    st.session_state.id_tema = id_tema
     tema = st.text_input(
         "Tema", key="tema", placeholder="Ej. LA IMPORTANCIA DE LA ORACIÓN"
     )
-    st.session_state.tema.upper()  # Asegurarse de que el tema esté en mayúsculas
+    tema = tema.upper()  # Asegurarse de que el tema esté en mayúsculas
+    st.session_state.tema = tema
     fecha_inicio = st.date_input("Fecha de inicio", key="fecha_inicio")
     fecha_fin = st.date_input("Fecha de fin", key="fecha_fin")
     versiculo = st.text_input("Versículo", key="versiculo", placeholder="Ej. Pv 4:23")
