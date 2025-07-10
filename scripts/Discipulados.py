@@ -1,24 +1,21 @@
-from scripts.db_sqlite import BD_SQLite_Celulas as DB
-from sqlite3 import connect
-
-db_path = r"DB_Celulas.db"
-
-
-class DataDiscipulados:
-    def __init__(self) -> None:
-        self.data = DB(connect(db_path))
-
-    def liderazgo(self):
-        return self.data.get_liderazgo()
-
-    def liderazgo_redes(self):
-        return self.data.get_liderazgo_redes()
-
-    def discipulados_historico(self):
-        return self.data.get_historico_discipulados()
+class Discipulados:
+    def __init__(self, manager_sheets) -> None:
+        self.oSheets = manager_sheets
 
     def get_discipulados(self):
-        return self.data.get_discipulados()
+        """
+        Obtiene los códigos de la hoja de cálculo.
+        """
+        return self.oSheets.get_data_hoja(sheet_name="discipulados")
 
-    def insert_hist_discipulados(self, data):
-        self.data.insert_hist_discipulados(data)
+
+if __name__ == "__main__":
+    from scripts.data_sheets import ManagerSheets
+
+    manager_sheets = ManagerSheets(
+        file_sheet_name="celulas",
+        spreadsheet_id="1GEtYGIQCucTTd6yVuC7dssMuJeYklbehJfWAC1UNkpE",
+        credentials_file="key.json",
+    )
+    oData = Discipulados(manager_sheets=manager_sheets)
+    print(oData.get_discipulados())

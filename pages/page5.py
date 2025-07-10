@@ -4,8 +4,8 @@ import streamlit as st
 from pandas import to_datetime
 
 from helpers.navigation import make_sidebar
-from scripts.Celulas import DataCelulas
-from scripts.Discipulados import DataDiscipulados
+from scripts.celulas import DataCelulas
+from scripts.discipulados import DataDiscipulados
 from scripts.data_sheets import ManagerSheets
 
 st.set_page_config(page_title="Estadísticas Generales", layout="wide", page_icon="⚡")

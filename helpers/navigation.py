@@ -46,6 +46,7 @@ def _extracted_from_make_sidebar():
             "pages/page4.py", label="Discipulados - registro de sobre", icon=None
         )
     st.page_link("pages/page5.py", label="Estadísticas Generales", icon=None)
+    st.page_link("pages/page6.py", label="Temas", icon=None)
 
     if st.button("Cerrar sesión"):
         logout()

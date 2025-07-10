@@ -1,7 +1,8 @@
-from pandas import DataFrame
 import gspread
-
+from google.oauth2.service_account import Credentials
+from googleapiclient.discovery import build
 from oauth2client.service_account import ServiceAccountCredentials
+from pandas import DataFrame
 
 
 class ManagerSheets:
@@ -40,6 +41,13 @@ class ManagerSheets:
             ],  # obtiene la primera fila como encabezados
         )
         return data
+
+    def get_service(self):
+        scopes = ["https://www.googleapis.com/auth/spreadsheets"]
+        creds = Credentials.from_service_account_file(
+            self.credentials_file, scopes=scopes
+        )
+        return build("sheets", "v4", credentials=creds)
 
 
 if __name__ == "__main__":
