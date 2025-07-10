@@ -88,14 +88,18 @@ st.dataframe(
     hide_index=True,
 )
 
-st.subheader("Nuevo tema")
+st.subheader("➕ Agregar nuevo tema")
 # Formulario para agregar un nuevo tema
 with st.form("agregar_tema"):
-    id_tema = st.text_input("ID del tema", key="id_tema")
-    tema = st.text_input("Tema", key="tema")
+    id_tema = st.text_input(
+        "ID del tema", key="id_tema", placeholder="Ej. TM20250701001"
+    )
+    tema = st.text_input(
+        "Tema", key="tema", placeholder="Ej. LA IMPORTANCIA DE LA ORACIÓN"
+    )
     fecha_inicio = st.date_input("Fecha de inicio", key="fecha_inicio")
     fecha_fin = st.date_input("Fecha de fin", key="fecha_fin")
-    versiculo = st.text_input("Versículo", key="versiculo")
+    versiculo = st.text_input("Versículo", key="versiculo", placeholder="Ej. Pv 4:23")
     submit_button = st.form_submit_button("Agregar tema")
     if submit_button:
         try:
