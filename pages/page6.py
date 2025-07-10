@@ -93,42 +93,48 @@ st.dataframe(
 st.subheader("📌 Agregar un nuevo tema")
 # Formulario para agregar un nuevo tema
 with st.form("agregar_tema"):
+    st.write("Completa los siguientes campos para agregar un nuevo tema:")
+    # Convertir todo a mayúsculas
     id_tema = st.text_input(
         "ID del tema",
         key="id_tema",
+        value=st.session_state.get("id_tema", "").upper(),
         placeholder="Ej. 'TM20250701' para el 1er tema del mes",
     )
-    id_tema = id_tema.upper()  # Asegurarse de que el ID esté en mayúsculas
-    st.session_state.id_tema = id_tema
     tema = st.text_input(
-        "Tema", key="tema", placeholder="Ej. LA IMPORTANCIA DE LA ORACIÓN"
+        "Tema",
+        key="tema",
+        value=st.session_state.get("tema", "").upper(),
+        placeholder="Ej. LA IMPORTANCIA DE LA ORACIÓN",
     )
-    tema = tema.upper()  # Asegurarse de que el tema esté en mayúsculas
-    st.session_state.tema = tema
     fecha_inicio = st.date_input("Fecha de inicio", key="fecha_inicio")
     fecha_fin = st.date_input("Fecha de fin", key="fecha_fin")
     versiculo = st.text_input("Versículo", key="versiculo", placeholder="Ej. Pv 4:23")
     submit_button = st.form_submit_button("Agregar tema")
     if submit_button:
-        try:
-            response = oTemas.add_tema(
-                [
-                    id_tema,
-                    tema,
-                    fecha_inicio.strftime("%Y-%m-%d"),
-                    fecha_fin.strftime("%Y-%m-%d"),
-                    versiculo,
-                ]
-            )
-            print(response)  # Para depuración
-            if response["success"]:
-                st.success(f"Tema '{tema}' agregado exitosamente.")
-                set_state(0)
-                st.rerun()  # Recargar la página para mostrar el nuevo tema
-            else:
-                st.error(response["message"])
-        except Exception as e:
-            st.error(f"Error al agregar el tema: {e}")
+        # Validar que todos los campos estén completos
+        if not id_tema or not tema or not versiculo:
+            st.error("Por favor, completa todos los campos.")
+        else:
+            try:
+                response = oTemas.add_tema(
+                    [
+                        id_tema,
+                        tema,
+                        fecha_inicio.strftime("%Y-%m-%d"),
+                        fecha_fin.strftime("%Y-%m-%d"),
+                        versiculo,
+                    ]
+                )
+
+                if response["success"]:
+                    st.success(f"Tema '{tema}' agregado exitosamente.")
+                    set_state(0)
+                    st.rerun()  # Recargar la página para mostrar el nuevo tema
+                else:
+                    st.error(response["message"])
+            except Exception as e:
+                st.error(f"Error al agregar el tema: {e}")
 
 # Footer
 st.markdown(
