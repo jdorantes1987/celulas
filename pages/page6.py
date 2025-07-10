@@ -30,6 +30,24 @@ def get_temas():
     return oTemas.get_temas()
 
 
+if "stage6" not in st.session_state:
+    st.session_state.stage6 = 0
+
+
+def set_state(i):
+    st.session_state.stage6 = i
+
+
+if st.session_state.stage6 == 0:
+    # Inicializar el estado de la sesión
+    st.session_state.id_tema = ""
+    st.session_state.tema = ""
+    st.session_state.fecha_inicio = today.date()
+    st.session_state.fecha_fin = today.date()
+    st.session_state.versiculo = ""
+    set_state(1)
+
+
 # Título principal
 st.title("Temas de las Casas de Bendición")
 
@@ -73,11 +91,11 @@ st.dataframe(
 st.subheader("Nuevo tema")
 # Formulario para agregar un nuevo tema
 with st.form("agregar_tema"):
-    id_tema = st.text_input("ID del tema")
-    tema = st.text_input("Tema")
-    fecha_inicio = st.date_input("Fecha de inicio")
-    fecha_fin = st.date_input("Fecha de fin")
-    versiculo = st.text_input("Versículo")
+    id_tema = st.text_input("ID del tema", key="id_tema")
+    tema = st.text_input("Tema", key="tema")
+    fecha_inicio = st.date_input("Fecha de inicio", key="fecha_inicio")
+    fecha_fin = st.date_input("Fecha de fin", key="fecha_fin")
+    versiculo = st.text_input("Versículo", key="versiculo")
     submit_button = st.form_submit_button("Agregar tema")
     if submit_button:
         try:
@@ -93,6 +111,7 @@ with st.form("agregar_tema"):
             print(response)  # Para depuración
             if response["success"]:
                 st.success(f"Tema '{tema}' agregado exitosamente.")
+                set_state(0)
                 st.rerun()  # Recargar la página para mostrar el nuevo tema
             else:
                 st.error(response["message"])
