@@ -1,9 +1,9 @@
 from pandas import DataFrame, to_datetime, to_numeric
 
-from scripts.celulas import Celulas
-from scripts.discipulados import Discipulados
-from scripts.liderazgo import Liderazgo
-from scripts.temas import Temas
+from celulas import Celulas
+from discipulados import Discipulados
+from liderazgo import Liderazgo
+from temas import Temas
 
 
 class DataManageSingleton:
