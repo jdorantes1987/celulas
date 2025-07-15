@@ -9,7 +9,7 @@ st.set_page_config(
     page_title="Células",
     layout="centered",
     initial_sidebar_state="expanded",
-    page_icon=":vs:",
+    page_icon="",
 )
 
 MENU_INICIO = "pages/page1.py"

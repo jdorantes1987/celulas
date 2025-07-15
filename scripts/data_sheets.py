@@ -5,7 +5,7 @@ from oauth2client.service_account import ServiceAccountCredentials
 from pandas import DataFrame
 
 
-class ManagerSheets:
+class ManageSheets:
     def __init__(self, file_sheet_name, spreadsheet_id, credentials_file):
         self.file_sheet_name = file_sheet_name
         self.spreadsheet_id = spreadsheet_id
@@ -55,22 +55,3 @@ class ManagerSheets:
             )
 
         return build("sheets", "v4", credentials=creds)
-
-
-if __name__ == "__main__":
-    import toml
-
-    # Carga las variables de entorno desde un archivo .toml
-    config = toml.load(r".streamlit\\config.toml")
-    SPREADSHEET_ID = config.get("google_sheets", {}).get("CELULAS_ID")
-    FILE_CELULAS_NAME = config.get("google_sheets", {}).get("FILE_CELULAS_NAME")
-    SHEET_NAME = config.get("google_sheets", {}).get("SHEET_TEMAS")
-    # Obtener la sección como diccionario
-    CREDENTIALS_FILE = dict(config["google_service_account"])
-
-    oTemas = ManagerSheets(
-        file_sheet_name=FILE_CELULAS_NAME,
-        spreadsheet_id=SPREADSHEET_ID,
-        credentials_file=CREDENTIALS_FILE,
-    )
-    print(oTemas.get_data_hoja(sheet_name=SHEET_NAME))

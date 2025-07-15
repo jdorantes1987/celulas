@@ -34,13 +34,3 @@ def aut_user(user, pw):
         croles.set_roles(u.ClsUsuarios.id_usuario())
         aut = True
     return aut
-
-
-# aut = aut_user('JDORANTES', '18329114')
-# print(aut)
-# print(u.ClsUsuarios.id_usuario())
-# print(u.ClsUsuarios.nombre())
-# print(u.ClsUsuarios.categoria())
-# croles.set_roles(u.ClsUsuarios.id_usuario())
-# print('Modulo derecha habilitado:', r.ClsUsuariosRoles.dic_roles['Derecha'])
-# print('Modulo Facturación habilitado:', r.ClsUsuariosRoles.dic_roles['Facturacion'])

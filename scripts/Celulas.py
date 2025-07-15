@@ -1,29 +1,72 @@
-from scripts.db_sqlite import BD_SQLite_Celulas as DB
-from sqlite3 import connect
-
-db_path = r"DB_Celulas.db"
+from pandas import DataFrame
 
 
-class DataCelulas:
-    def __init__(self) -> None:
-        self.data = DB(connect(db_path))
+class Celulas:
+    def __init__(self, manager_sheets) -> None:
+        self.oSheets = manager_sheets
 
-    def celulas_activas(self):
-        data = self.data.get_celulas()
-        return data[data["estatus_celula"] == 1]
+    def get_celulas(self) -> DataFrame:
+        """
+        Obtiene los códigos de la hoja de cálculo.
+        """
+        return self.oSheets.get_data_hoja(sheet_name="celulas")
 
-    def sobres_por_entregar(self):
-        hist_celulas_activas = self.celuas_historico()
-        return hist_celulas_activas[hist_celulas_activas["sobre_entregado"] == 0]
+    def get_celulas_historico(self) -> DataFrame:
+        """
+        Obtiene el histórico de las celdas de la hoja de cálculo.
+        """
+        return self.oSheets.get_data_hoja(sheet_name="hist_celulas")
 
-    def celuas_historico(self):
-        return self.data.get_historico_celulas()
+    def add_actividad(self, data_actividad) -> dict:
+        """
+        Agrega una nueva actividad a la hoja de cálculo y retorna la respuesta del API.
+        """
+        response = (
+            self.oSheets.get_service()
+            .spreadsheets()
+            .values()
+            .append(
+                spreadsheetId=self.oSheets.spreadsheet_id,
+                range="hist_celulas",
+                valueInputOption="USER_ENTERED",
+                body={"values": [data_actividad]},
+            )
+            .execute()
+        )
+        return {
+            "success": True,
+            "message": dict(updatedCells=response["updates"]["updatedCells"]),
+        }
 
-    def liderazgo(self):
-        return self.data.get_liderazgo()
 
-    def temas(self):
-        return self.data.get_temas()
+if __name__ == "__main__":
+    from scripts.data_sheets import ManageSheets
 
-    def insert_hist_celulas(self, data):
-        self.data.insert_hist_celulas(data)
+    manager_sheets = ManageSheets(
+        file_sheet_name="celulas",
+        spreadsheet_id="1GEtYGIQCucTTd6yVuC7dssMuJeYklbehJfWAC1UNkpE",
+        credentials_file="key.json",
+    )
+    oData = Celulas(manager_sheets=manager_sheets)
+
+    print(
+        oData.add_actividad(
+            [
+                "298",
+                "LD202401",
+                "2025-07-07",
+                "2025-07-13",
+                "2025-07-13",
+                "CB00055",
+                "Expositor prueba",
+                "TM99999999",
+                "5",
+                "100",
+                "10",
+                "1",  # Sobre entregado
+                "Observación de prueba",
+                "jdorantes",
+                "2025-07-04 13:34:01",  # fecha de inserción
+            ]
+        )
+    )

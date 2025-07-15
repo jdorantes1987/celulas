@@ -41,28 +41,3 @@ class Temas:
             "success": True,
             "message": dict(updatedCells=response["updates"]["updatedCells"]),
         }
-
-
-if __name__ == "__main__":
-    from scripts.data_sheets import ManagerSheets
-
-    manager_sheets = ManagerSheets(
-        file_sheet_name="celulas",
-        spreadsheet_id="1GEtYGIQCucTTd6yVuC7dssMuJeYklbehJfWAC1UNkpE",
-        credentials_file="key.json",
-    )
-    oData = Temas(manager_sheets=manager_sheets)
-
-    # print(oData.existe_tema("TM20250701"))
-
-    print(
-        oData.add_tema(
-            [
-                "TM20250703",
-                "prueba tema",
-                "2025-07-07",
-                "2025-07-13",
-                "PRUEBA",
-            ]
-        )
-    )

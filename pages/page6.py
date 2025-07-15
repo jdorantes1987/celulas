@@ -3,35 +3,35 @@ import datetime
 import streamlit as st
 from pandas import to_datetime
 
+from gestion_user.usuarios import ClsUsuarios
 from helpers.navigation import make_sidebar
+from scripts.data_manage import DataManageSingleton
+from scripts.data_sheets import ManageSheets
 from scripts.temas import Temas
-from scripts.data_sheets import ManagerSheets
 
-st.set_page_config(page_title="Temas", layout="wide", page_icon="⚡")
+# icono negro streamlit set_page_config
+st.set_page_config(page_title="Temas", layout="wide", page_icon="")
 
 make_sidebar()
 
 SPREADSHEET_ID = st.secrets.google_sheets.CELULAS_ID
 FILE_NAME = st.secrets.google_sheets.FILE_NAME
-SHEET_NAME = st.secrets.google_sheets.SHEET_HIST_CELULAS
 CREDENTIALS_DICT = dict(st.secrets.google_service_account)
 
-oManagerSheets = ManagerSheets(
+manager_sheets = ManageSheets(
     file_sheet_name=FILE_NAME,
     spreadsheet_id=SPREADSHEET_ID,
     credentials_file=CREDENTIALS_DICT,
 )
-oTemas = Temas(manager_sheets=oManagerSheets)
+
 today = datetime.datetime.now()
 
-
-@st.cache_data
-def get_temas():
-    return oTemas.get_temas()
-
-
-if "stage6" not in st.session_state:
-    st.session_state.stage6 = 0
+for key, default in [
+    ("stage6", 0),
+    ("temas", None),
+]:
+    if key not in st.session_state:
+        st.session_state[key] = default
 
 
 def set_state(i):
@@ -40,8 +40,13 @@ def set_state(i):
 
 if st.session_state.stage6 == 0:
     # Inicializar el estado de la sesión
+    oDataManage = DataManageSingleton.get_instance(manager_sheets)
+    st.session_state.oTemas = Temas(manager_sheets=manager_sheets)
+    temas = oDataManage.get_temas_celulas()
+    temas.sort_values(by="fecha_ini", ascending=False, inplace=True)
     st.session_state.id_tema = ""
-    st.session_state.tema = ""
+    st.session_state.txt_tema = ""
+    st.session_state.tema = temas
     st.session_state.fecha_inicio = today.date()
     st.session_state.fecha_fin = today.date()
     st.session_state.versiculo = ""
@@ -51,7 +56,10 @@ if st.session_state.stage6 == 0:
 # Título principal
 st.title("Temas de las Casas de Bendición")
 
-df = get_temas()
+# boton con icono
+if st.button("🔄 Refrescar"):
+    set_state(0)
+    st.rerun()  # Recargar la página para mostrar los nuevos datos
 
 # Layout profesional con columnas
 col1, col2 = st.columns(2)
@@ -59,13 +67,14 @@ with col1:
     st.subheader("📊 Temas registrados")
     st.metric(
         label="Total de temas",
-        value=df.shape[0],
+        value=st.session_state.tema.shape[0],
     )
 
 with col2:
     st.subheader("📅 Último tema registrado")
-    if df.shape[0] > 0:
-        last_tema = df.iloc[-1]
+    if st.session_state.tema.shape[0] > 0:
+        last_tema = st.session_state.tema.iloc[0]
+        # ajustar tamaño value
         st.metric(
             label=last_tema["id_tema"],
             value=last_tema["descrip"],
@@ -74,11 +83,9 @@ with col2:
     else:
         st.metric(label="No hay temas registrados", value="0")
 
-df.sort_values(by="fecha_ini", ascending=False, inplace=True)
-
 st.subheader("📋 Lista de temas")
 st.dataframe(
-    df,
+    st.session_state.tema.drop(columns=["co_us_in", "fe_us_in"], errors="ignore"),
     column_config={
         "id_tema": st.column_config.TextColumn("ID del tema"),
         "descrip": st.column_config.TextColumn("Descripción"),
@@ -103,52 +110,43 @@ with st.form("agregar_tema"):
     )
     tema = st.text_input(
         "Tema",
-        key="tema",
-        value=st.session_state.get("tema", "").upper(),
+        key="txt_tema",
+        value=st.session_state.get("txt_tema", "").upper(),
         placeholder="Ej. LA IMPORTANCIA DE LA ORACIÓN",
     )
     fecha_inicio = st.date_input("Fecha de inicio", key="fecha_inicio")
     fecha_fin = st.date_input("Fecha de fin", key="fecha_fin")
     versiculo = st.text_input("Versículo", key="versiculo", placeholder="Ej. Pv 4:23")
     submit_button = st.form_submit_button("Agregar tema")
+    user = ClsUsuarios.id_usuario()
+    fecha_insert = today.strftime("%Y-%m-%d %H:%M:%S")
     if submit_button:
         # Validar que todos los campos estén completos
         if not id_tema or not tema or not versiculo:
             st.error("Por favor, completa todos los campos.")
         else:
             try:
-                response = oTemas.add_tema(
+                tema_upper = tema.upper()
+                response = st.session_state.oTemas.add_tema(
                     [
                         id_tema,
-                        tema,
+                        tema_upper,
                         fecha_inicio.strftime("%Y-%m-%d"),
                         fecha_fin.strftime("%Y-%m-%d"),
                         versiculo,
+                        user,
+                        fecha_insert,
                     ]
                 )
 
                 if response["success"]:
-                    st.success(f"Tema '{tema}' agregado exitosamente.")
+                    st.success(f"Tema '{id_tema}' agregado exitosamente.")
                     set_state(0)
                     st.rerun()  # Recargar la página para mostrar el nuevo tema
                 else:
                     st.error(response["message"])
             except Exception as e:
                 st.error(f"Error al agregar el tema: {e}")
-
-# Footer
-st.markdown(
-    """
----
-*Desarrollado por [Jackson Dorantes](dorantes.jackson@gmail.com)*
-"""
-)
-
-# Hide the footer
-hide_streamlit_style = """
-            <style>
-            #MainMenu {visibility: hidden;}
-            footer {visibility: hidden;}
-            </style>
-            """
-st.markdown(hide_streamlit_style, unsafe_allow_html=True)
+                st.error(response["message"])
+            except Exception as e:
+                st.error(f"Error al agregar el tema: {e}")
