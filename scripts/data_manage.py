@@ -1,8 +1,8 @@
 from pandas import DataFrame, to_datetime, to_numeric
 
-from scripts.celulas import Celulas
-from scripts.discipulados import Discipulados
-from scripts.liderazgo import Liderazgo
+from scripts.Celulas import Celulas
+from scripts.Discipulados import Discipulados
+from scripts.Liderazgo import Liderazgo
 from scripts.temas import Temas
 
 
