@@ -6,7 +6,7 @@ from gestion_user.usuarios import ClsUsuarios
 from helpers.navigation import make_sidebar
 from scripts.data_manage import DataManageSingleton
 from scripts.data_sheets import ManageSheets
-from scripts.celulas import Celulas
+from scripts.Celulas import Celulas
 
 st.set_page_config(
     page_title="Células - Registro de sobres", layout="wide", page_icon=""
