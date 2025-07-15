@@ -37,36 +37,3 @@ class Celulas:
             "success": True,
             "message": dict(updatedCells=response["updates"]["updatedCells"]),
         }
-
-
-if __name__ == "__main__":
-    from scripts.data_sheets import ManageSheets
-
-    manager_sheets = ManageSheets(
-        file_sheet_name="celulas",
-        spreadsheet_id="1GEtYGIQCucTTd6yVuC7dssMuJeYklbehJfWAC1UNkpE",
-        credentials_file="key.json",
-    )
-    oData = Celulas(manager_sheets=manager_sheets)
-
-    print(
-        oData.add_actividad(
-            [
-                "298",
-                "LD202401",
-                "2025-07-07",
-                "2025-07-13",
-                "2025-07-13",
-                "CB00055",
-                "Expositor prueba",
-                "TM99999999",
-                "5",
-                "100",
-                "10",
-                "1",  # Sobre entregado
-                "Observación de prueba",
-                "jdorantes",
-                "2025-07-04 13:34:01",  # fecha de inserción
-            ]
-        )
-    )
