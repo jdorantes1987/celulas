@@ -279,18 +279,3 @@ class DataManage:
                 "estatus_liderazgo",
             ]
         ]
-
-
-if __name__ == "__main__":
-    from scripts.data_sheets import ManageSheets
-
-    manager_sheets = ManageSheets(
-        file_sheet_name="celulas",
-        spreadsheet_id="1GEtYGIQCucTTd6yVuC7dssMuJeYklbehJfWAC1UNkpE",
-        credentials_file="key.json",
-    )
-    oData = DataManage(manager_sheets=manager_sheets)
-    print(oData.get_liderazgo())
-    # oData.get_discipulados_historico_con_liderazgo().to_excel(
-    #    "get_discipulados_historico_con_liderazgo.xlsx", index=False
-    # )
