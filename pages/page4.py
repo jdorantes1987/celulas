@@ -61,16 +61,17 @@ with col4:
 with col5:
     fecha_entregado = st.date_input("fecha entregado")
 
-    st.session_state.discipulados["buscador"] = (
-        st.session_state.discipulados["id_discipulado"]
+    df_discipuldos = st.session_state.discipulados.copy()
+    df_discipuldos["buscador"] = (
+        df_discipuldos["id_discipulado"]
         + " | "
-        + st.session_state.discipulados["cod_red"]
+        + df_discipuldos["cod_red"]
         + " | "
-        + st.session_state.discipulados["nombre"]
+        + df_discipuldos["nombre"]
     )
 id_discipulado = st.selectbox(
     "Lista de discipulados activos:",
-    st.session_state.discipulados["buscador"],
+    df_discipuldos["buscador"],
     index=None,
     placeholder="seleccionar..",
 )

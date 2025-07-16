@@ -62,7 +62,7 @@ with col4:
 with col5:
     fecha_entregado = st.date_input("fecha entregado")
 
-celulas = st.session_state.celulas
+celulas = st.session_state.celulas.copy()
 celulas["buscador"] = (
     celulas["id_celula"]
     + " | "
@@ -95,7 +95,7 @@ with col6:
     )
 
 with col7:
-    temas = st.session_state.temas
+    temas = st.session_state.temas.copy()
     temas["buscador"] = temas["id_tema"] + " | " + temas["descrip"]
     tema_select = st.selectbox(
         "lista de temas:",

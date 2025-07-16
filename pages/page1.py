@@ -18,15 +18,15 @@ st.markdown(
     Para registrar la información de las casas de bendición, sigue estos pasos:
     1. **Selecciona la pestaña "Células - registro de sobres"** en el menú lateral.
     2. **Completa los campos requeridos**:
-        - **fecha célula**: Selecciona la fecha de la célula.
-        - **id celula**: Ingresa el ID de la célula.
-        - **tema**: Selecciona el tema de la célula.
-        - **asistentes**: Ingresa el número de asistentes.
-        - **monto en bolívares**: Ingresa el monto recaudado en bolívares.
-        - **monto en dólares**: Ingresa el monto recaudado en dólares.
-        - **estatus**: Marca si la célula está activa o inactiva.
-        - **expositor**: Ingresa el nombre del expositor.
-        - **observaciones**: Agrega cualquier observación relevante.
+        - **:blue[fecha célula]**: Selecciona la fecha de la célula.
+        - **:blue[id célula]**: Ingresa el ID de la célula.
+        - **:blue[tema]**: Selecciona el tema de la célula.
+        - **:blue[asistentes]**: Ingresa el número de asistentes.
+        - **:blue[monto en bolívares]**: Ingresa el monto recaudado en bolívares.
+        - **:blue[monto en dólares]**: Ingresa el monto recaudado en dólares.
+        - **:blue[estatus]**: Marca si la célula está activa o inactiva.
+        - **:blue[expositor]**: Ingresa el nombre del expositor.
+        - **:blue[observaciones]**: Agrega cualquier observación relevante.
     3. **Haz clic en "Agregar"** para registrar la información. ➕
     4. **Repite el proceso** para cada célula que desees registrar. 🔄
 """,
