@@ -38,6 +38,7 @@ if st.session_state.stage3 == 1:
     st.session_state.w_m_bs = 0
     st.session_state.w_m_usd = 0
     st.session_state.w_s_entr = False
+    set_state(2)
 
 col1, col2 = st.columns(2, gap="small")
 with col1:
