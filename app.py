@@ -107,7 +107,7 @@ if "usuario" not in st.session_state:
         st.rerun()
 else:
     # Si el usuario ya ha sido ingresado, se oculta el input y se muestra el usuario ingresado
-    st.write(f"### Usuario ingresado: :red[{st.session_state.usuario}]")
+    st.write(f"### Usuario ingresado: *:orange[{st.session_state.usuario}]*")
 
     # Pedir la contraseña
     password = st.text_input("Ingresa tu contraseña:", type="password")
