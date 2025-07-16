@@ -4,32 +4,15 @@ import streamlit as st
 from pandas import to_datetime
 
 from helpers.navigation import make_sidebar
-from scripts.data_manage import DataManageSingleton
-from scripts.data_sheets import ManageSheets
 
 st.set_page_config(page_title="Estadísticas Generales", layout="wide", page_icon="")
 
 make_sidebar()
 
-SPREADSHEET_ID = st.secrets.google_sheets.CELULAS_ID
-FILE_NAME = st.secrets.google_sheets.FILE_NAME
-CREDENTIALS_DICT = dict(st.secrets.google_service_account)
-
-manager_sheets = ManageSheets(
-    file_sheet_name=FILE_NAME,
-    spreadsheet_id=SPREADSHEET_ID,
-    credentials_file=CREDENTIALS_DICT,
-)
-
 today = datetime.datetime.now()
 
 for key, default in [
     ("stage5", 0),
-    ("data", DataManageSingleton.get_instance(manager_sheets)),
-    ("celulas", None),
-    ("discipulados", None),
-    ("celulas_historico", None),
-    ("discipulados_historico", None),
 ]:
     if key not in st.session_state:
         st.session_state[key] = default
@@ -41,35 +24,13 @@ def set_state(i):
 
 if st.session_state.stage5 == 0:
     # Inicializar el estado de la sesión
-
-    st.session_state.celulas = st.session_state.data.get_celulas_con_liderazgo()
-    # Filtrar las células activas
-    st.session_state.celulas = st.session_state.celulas[
-        st.session_state.celulas["estatus_celula"] == 1
-    ]
-
-    st.session_state.discipulados = (
-        st.session_state.data.get_discipulados_con_liderazgo()
-    )
-    # Filtrar los discipulados activos
-    st.session_state.discipulados = st.session_state.discipulados[
-        st.session_state.discipulados["estatus_liderazgo"] == 1
-    ]
-    # Obtener los históricos de células y discipulados
-    st.session_state.celulas_historico = (
-        st.session_state.data.get_celulas_historico_con_liderazgo()
-    )
-    st.session_state.discipulados_historico = (
-        st.session_state.data.get_discipulados_historico_con_liderazgo()
-    )
     set_state(1)
-
 
 # Título principal
 st.title("📊 Estadísticas Generales")
 
 # Layout profesional con columnas
-col1, col2 = st.columns(2)
+col1, col2, col3 = st.columns(3)
 
 with col1:
     st.subheader("🏠 Células activas")
@@ -86,6 +47,29 @@ with col2:
         label="Discipulados activos",
         value=df_discipulados.shape[0],
     )
+
+with col3:
+    df_celulas_historico = st.session_state.celulas_historico.copy()
+    df_celulas_historico = df_celulas_historico[
+        df_celulas_historico["sobre_entregado"] == 0
+    ]
+    df_discipulados_historico = st.session_state.discipulados_historico.copy()
+    df_discipulados_historico = df_discipulados_historico[
+        df_discipulados_historico["sobre_entregado"] == 0
+    ]
+    df_celulas_historico["monto_bs"] = df_celulas_historico["monto_bs"].fillna(0)
+    df_discipulados_historico["monto_bs"] = df_discipulados_historico[
+        "monto_bs"
+    ].fillna(0)
+    total_bs = (
+        df_celulas_historico["monto_bs"].sum()
+        + df_discipulados_historico["monto_bs"].sum()
+    )
+    st.metric(
+        label="💶 Sobres por entregar",
+        value=f"Bs. {total_bs:,.2f}",
+    )
+
 
 # Sección de detalles históricos (opcional)
 with st.expander("🏠 Ver células activas"):

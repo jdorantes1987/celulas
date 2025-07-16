@@ -1,8 +1,12 @@
-import streamlit as st
-from time import sleep
 from datetime import datetime
+from time import sleep
+
+import streamlit as st
+
 from gestion_user.control_usuarios import aut_user
 from gestion_user.usuarios_roles import ClsUsuariosRoles
+from scripts.data_manage import DataManageSingleton
+from scripts.data_sheets import ManageSheets
 
 
 st.set_page_config(
@@ -36,9 +40,58 @@ def login(user, passw):
         date = datetime.now()
         print(f"{date} Usuario {user} ha iniciado sesión.")
         st.session_state.logged_in = True
-        st.success("Sesión iniciada exitosamente!")
         st.cache_data.clear()
-        sleep(0.5)
+
+        with st.spinner("Cargando datos..."):
+            SPREADSHEET_ID = st.secrets.google_sheets.CELULAS_ID
+            FILE_NAME = st.secrets.google_sheets.FILE_NAME
+            CREDENTIALS_DICT = dict(st.secrets.google_service_account)
+
+            st.session_state.manager_sheets = ManageSheets(
+                file_sheet_name=FILE_NAME,
+                spreadsheet_id=SPREADSHEET_ID,
+                credentials_file=CREDENTIALS_DICT,
+            )
+
+            # Cargar data variables globales de sesión
+            st.session_state.data = DataManageSingleton.get_instance(
+                st.session_state.manager_sheets
+            )
+            st.session_state.liderazgo_red = (
+                st.session_state.data.get_liderazgo_de_red()
+            )
+
+            st.session_state.celulas = st.session_state.data.get_celulas_con_liderazgo()
+            # Filtrar las células activas
+            st.session_state.celulas = st.session_state.celulas[
+                st.session_state.celulas["estatus_celula"] == 1
+            ]
+
+            st.session_state.discipulados = (
+                st.session_state.data.get_discipulados_con_liderazgo()
+            )
+            # Filtrar los discipulados activos
+            st.session_state.discipulados = st.session_state.discipulados[
+                st.session_state.discipulados["estatus_liderazgo"] == 1
+            ]
+            # Obtener los históricos de células y discipulados
+            st.session_state.celulas_historico = (
+                st.session_state.data.get_celulas_historico_con_liderazgo()
+            )
+            st.session_state.discipulados_historico = (
+                st.session_state.data.get_discipulados_historico_con_liderazgo()
+            )
+            # Obtener los temas de las células
+            st.session_state.temas = st.session_state.data.get_temas_celulas()
+            # Obtener el nuevo id del registro de actividad en las células
+            st.session_state.id_registro_celulas = str(
+                st.session_state.celulas_historico["id"].max() + 1
+            )
+            # Obtener el nuevo id del registro de actividad en los discipulados
+            st.session_state.id_registro_discipulado = str(
+                st.session_state.discipulados_historico["id"].max() + 1
+            )
+        st.success("Sesión iniciada exitosamente!")
         st.switch_page(MENU_INICIO)
         return True
     return False

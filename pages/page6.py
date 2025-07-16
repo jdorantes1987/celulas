@@ -5,24 +5,12 @@ from pandas import to_datetime
 
 from gestion_user.usuarios import ClsUsuarios
 from helpers.navigation import make_sidebar
-from scripts.data_manage import DataManageSingleton
-from scripts.data_sheets import ManageSheets
 from scripts.temas import Temas
 
 # icono negro streamlit set_page_config
 st.set_page_config(page_title="Temas", layout="wide", page_icon="")
 
 make_sidebar()
-
-SPREADSHEET_ID = st.secrets.google_sheets.CELULAS_ID
-FILE_NAME = st.secrets.google_sheets.FILE_NAME
-CREDENTIALS_DICT = dict(st.secrets.google_service_account)
-
-manager_sheets = ManageSheets(
-    file_sheet_name=FILE_NAME,
-    spreadsheet_id=SPREADSHEET_ID,
-    credentials_file=CREDENTIALS_DICT,
-)
 
 today = datetime.datetime.now()
 
@@ -40,13 +28,10 @@ def set_state(i):
 
 if st.session_state.stage6 == 0:
     # Inicializar el estado de la sesión
-    oDataManage = DataManageSingleton.get_instance(manager_sheets)
-    st.session_state.oTemas = Temas(manager_sheets=manager_sheets)
-    temas = oDataManage.get_temas_celulas()
-    temas.sort_values(by="fecha_ini", ascending=False, inplace=True)
+    st.session_state.oTemas = Temas(st.session_state.manager_sheets)
+    st.session_state.temas.sort_values(by="fecha_ini", ascending=False, inplace=True)
     st.session_state.id_tema = ""
     st.session_state.txt_tema = ""
-    st.session_state.tema = temas
     st.session_state.fecha_inicio = today.date()
     st.session_state.fecha_fin = today.date()
     st.session_state.versiculo = ""
@@ -67,13 +52,13 @@ with col1:
     st.subheader("📊 Temas registrados")
     st.metric(
         label="Total de temas",
-        value=st.session_state.tema.shape[0],
+        value=st.session_state.temas.shape[0],
     )
 
 with col2:
     st.subheader("📅 Último tema registrado")
-    if st.session_state.tema.shape[0] > 0:
-        last_tema = st.session_state.tema.iloc[0]
+    if st.session_state.temas.shape[0] > 0:
+        last_tema = st.session_state.temas.iloc[0]
         # ajustar tamaño value
         st.metric(
             label=last_tema["id_tema"],
@@ -85,7 +70,7 @@ with col2:
 
 st.subheader("📋 Lista de temas")
 st.dataframe(
-    st.session_state.tema.drop(columns=["co_us_in", "fe_us_in"], errors="ignore"),
+    st.session_state.temas.drop(columns=["co_us_in", "fe_us_in"], errors="ignore"),
     column_config={
         "id_tema": st.column_config.TextColumn("ID del tema"),
         "descrip": st.column_config.TextColumn("Descripción"),

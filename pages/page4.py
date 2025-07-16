@@ -1,8 +1,10 @@
+import datetime
+
 import streamlit as st
 
+from gestion_user.usuarios import ClsUsuarios
 from helpers.navigation import make_sidebar
-from scripts.data_manage import DataManageSingleton
-from scripts.data_sheets import ManageSheets
+from scripts.Discipulados import Discipulados
 
 st.set_page_config(
     page_title="Discipulados - Registro de sobres", layout="wide", page_icon=""
@@ -10,22 +12,12 @@ st.set_page_config(
 
 make_sidebar()
 
-
-SPREADSHEET_ID = st.secrets.google_sheets.CELULAS_ID
-FILE_NAME = st.secrets.google_sheets.FILE_NAME
-CREDENTIALS_DICT = dict(st.secrets.google_service_account)
-manager_sheets = ManageSheets(
-    file_sheet_name=FILE_NAME,
-    spreadsheet_id=SPREADSHEET_ID,
-    credentials_file=CREDENTIALS_DICT,
-)
+today = datetime.datetime.now()
 
 st.header("Datos del sobre")
 
 for key, default in [
     ("stage4", 0),
-    ("discipulados", None),
-    ("liderazgo_red", None),
 ]:
     if key not in st.session_state:
         st.session_state[key] = default
@@ -36,13 +28,6 @@ def set_state(i):
 
 
 if st.session_state.stage4 == 0:
-    data = DataManageSingleton.get_instance(manager_sheets)
-    liderazgo_red = data.get_liderazgo_de_red()
-    liderazgo_red = liderazgo_red[liderazgo_red["estatus_liderazgo_red"] == 1]
-    st.session_state.liderazgo_red = liderazgo_red
-    discipulados = data.get_discipulados_con_liderazgo()
-    discipulados = discipulados[discipulados["estatus_liderazgo"] == 1]
-    st.session_state.discipulados = discipulados
     st.session_state.w_tema = ""
     st.session_state.w_exp = ""
     st.session_state.w_observ = ""
@@ -114,11 +99,20 @@ with col7:
         autocomplete="on",
     )
 
-numero_asistentes = st.slider("número de asistentes", 0, 100, key="w_n_asist")
-bs = st.number_input("ingrese el monto en bolívares.", key="w_m_bs")
-usd = st.number_input("ingrese el monto en dólares.", key="w_m_usd")
+numero_asistentes = str(st.slider("número de asistentes", 0, 100, key="w_n_asist"))
 
-sobre_entregado = st.checkbox("sobre entregado?", key="w_s_entr")
+# Monto en bolívares y dólares con coma como separador decimal
+bs = str(
+    st.number_input(
+        "ingrese el monto en bolívares (usar coma para decimales)", key="w_m_bs"
+    )
+)
+bs = str(bs.replace(",", "").replace(".", ","))
+
+usd = str(st.number_input("ingrese el monto en dólares.", key="w_m_usd"))
+usd = str(usd.replace(",", "").replace(".", ","))
+
+sobre_entregado = str(int(st.checkbox("sobre entregado?", key="w_s_entr")))
 
 observ = st.text_input(
     label="observaciones",
@@ -128,26 +122,34 @@ observ = st.text_input(
     autocomplete="on",
 )
 
+user = ClsUsuarios.id_usuario()
+fecha_insert = today.strftime("%Y-%m-%d %H:%M:%S")
+
 registro = [
-    (
-        None,
-        id_liderazgo,
-        fecha,
-        fecha_recibido,
-        fecha_entregado,
-        id_discipulado,
-        expositor,
-        tema,
-        numero_asistentes,
-        bs,
-        usd,
-        sobre_entregado,
-        observ,
-    )
+    st.session_state.id_registro_discipulado,
+    id_liderazgo,
+    id_discipulado,
+    fecha.strftime("%Y-%m-%d"),
+    fecha_recibido.strftime("%Y-%m-%d"),
+    fecha_entregado.strftime("%Y-%m-%d"),
+    expositor,
+    tema,
+    numero_asistentes,
+    bs,
+    usd,
+    sobre_entregado,
+    observ,
+    user,
+    fecha_insert,
 ]
 
+
 if st.button("agregar"):
-    data.insert_hist_celulas(registro)
+    Discipulados(manager_sheets=st.session_state.manager_sheets).add_actividad(registro)
+    # Actualizar los datos en la sesión
+    st.session_state.discipulados_historico = (
+        st.session_state.data.get_discipulados_historico_con_liderazgo()
+    )
     set_state(3)
 
 # if st.session_state.stage4 >= 1 and st.session_state.stage4 != 3:

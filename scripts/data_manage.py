@@ -223,11 +223,12 @@ class DataManage:
         df_join.rename(
             columns={
                 "id_liderazgo_x": "id_liderazgo",
-                "id_x": "id_discipulado",
+                "id_x": "id",
             },
             inplace=True,
         )
 
+        df_join["id"] = df_join["id"].astype(int)
         df_join["asistentes"] = df_join["asistentes"].astype(int)
         df_join["estatus_liderazgo"] = df_join["estatus_liderazgo"].astype(int)
 
@@ -256,8 +257,10 @@ class DataManage:
             )
         except Exception as e:
             print(f"Error en obtener_facturas_validadas: {e}")
+
         return df_join[
             [
+                "id",
                 "id_discipulado",
                 "id_liderazgo",
                 "fecha",

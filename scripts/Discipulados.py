@@ -16,3 +16,24 @@ class Discipulados:
         Obtiene los discipulados historicos de la hoja de cálculo.
         """
         return self.oSheets.get_data_hoja(sheet_name="hist_discipulados")
+
+    def add_actividad(self, data_actividad) -> dict:
+        """
+        Agrega una nueva actividad a la hoja de cálculo y retorna la respuesta del API.
+        """
+        response = (
+            self.oSheets.get_service()
+            .spreadsheets()
+            .values()
+            .append(
+                spreadsheetId=self.oSheets.spreadsheet_id,
+                range="hist_discipulados",
+                valueInputOption="USER_ENTERED",
+                body={"values": [data_actividad]},
+            )
+            .execute()
+        )
+        return {
+            "success": True,
+            "message": dict(updatedCells=response["updates"]["updatedCells"]),
+        }
