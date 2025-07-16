@@ -40,10 +40,10 @@ def _extracted_from_make_sidebar():
     st.page_link("pages/page1.py", label="Inicio", icon=None)
     # st.page_link("pages/page2.py", label="Datos liderazgo", icon=None)
     if ur.ClsUsuariosRoles.roles()["SOBRES-CELULAS"] == 1:
-        st.page_link("pages/page3.py", label="Células - registro de sobre", icon=None)
+        st.page_link("pages/page3.py", label="Células - registro de sobres", icon=None)
     if ur.ClsUsuariosRoles.roles()["SOBRES-DISCIPULADOS"] == 1:
         st.page_link(
-            "pages/page4.py", label="Discipulados - registro de sobre", icon=None
+            "pages/page4.py", label="Discipulados - registro de sobres", icon=None
         )
     st.page_link("pages/page5.py", label="Estadísticas Generales", icon=None)
     st.page_link("pages/page6.py", label="Temas", icon=None)
