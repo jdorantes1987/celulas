@@ -9,6 +9,7 @@ from scripts.data_manage import DataManageSingleton
 from scripts.data_sheets import ManageSheets
 
 
+# Configuración de página con fondo personalizado
 st.set_page_config(
     page_title="Células",
     layout="centered",
