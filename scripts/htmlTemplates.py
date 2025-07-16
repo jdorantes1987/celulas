@@ -30,7 +30,7 @@ css = """
     width: 100%;
     background-color: #2b313e;
     color: white;
-    text-align: right;
+    text-align: center;
 }
 
 .footer p {
@@ -74,6 +74,6 @@ hide_st_style = """
 
 footer = """
         <div class="footer">
-        <p>dev by <a href="dorantes.jackson@gmail.com" style="color:#64feda;">JD Solutions</a> with <a href="https://streamlit.io" style="color:#36AE7C;">Streamlit</a></p>
+        <p>dev by <a href="dorantes.jackson@gmail.com" style="color:#64feda;">JD Solutions</a> with <a href="https://streamlit.io" style="color:#ea5656;">Streamlit</a></p>
         </div>
 """
