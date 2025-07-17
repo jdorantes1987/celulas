@@ -153,12 +153,6 @@ registro = [
 
 if st.button("agregar"):
     Celulas(manager_sheets=st.session_state.manager_sheets).add_actividad(registro)
-    st.session_state.celulas_historico = (
-        st.session_state.data.get_celulas_historico_con_liderazgo()
-    )
-    st.session_state.id_registro_celulas = str(
-        st.session_state.celulas_historico["id"].max() + 1
-    )
     set_state(3)
 
 # if st.session_state.stage >= 1 and st.session_state.stage != 3:
@@ -166,6 +160,12 @@ if st.button("agregar"):
 
 if st.session_state.stage3 >= 3:
     st.success(f"Registro {st.session_state.id_registro_celulas} insertado.")
+    st.session_state.celulas_historico = (
+        st.session_state.data.get_celulas_historico_con_liderazgo()
+    )
+    st.session_state.id_registro_celulas = str(
+        st.session_state.celulas_historico["id"].max() + 1
+    )
     col1, col2 = st.columns([0.1, 0.1])
     with col1:
         col1.button("Continuar con otro registro?", on_click=set_state, args=[1])
