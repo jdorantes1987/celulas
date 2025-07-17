@@ -77,8 +77,50 @@ with col4:
         value=f"$. {total_usd:,.2f}",
     )
 
+with st.expander("🧑‍🏫 Ver liderazgo activo"):
+    liderazgo = st.session_state.liderazgo.copy()
+    liderazgo = liderazgo[liderazgo["estatus"] == 1]  # Filtrar solo liderazgo activo
+    liderazgo.sort_values(by=["cod_base_lider", "cod_red"], inplace=True)
 
-# Sección de detalles históricos (opcional)
+    st.subheader("Liderazgo activo")
+    # Metrica cantidad de líderes
+    total_lideres = liderazgo.shape[0]
+    st.metric(label="Total líderes", value=total_lideres, width="content")
+
+    # Agrupar por código de base y contar los líderes
+    st.subheader("Bases de liderazgo")
+    base_counts = liderazgo.groupby("cod_base_lider").size().reset_index(name="count")
+    base_counts.sort_values(by="count", ascending=False, inplace=True)
+    st.dataframe(
+        base_counts,
+        column_config={
+            "cod_base_lider": st.column_config.TextColumn("Código de base"),
+            "count": st.column_config.NumberColumn("Cantidad de códigos"),
+        },
+        use_container_width=False,
+        hide_index=True,
+    )
+
+    st.subheader("Liderazgo por red")
+    st.dataframe(
+        liderazgo[
+            [
+                "cod_red",
+                "nombre",
+                "cod_lider",
+                "nombre_lider",
+            ]
+        ],
+        column_config={
+            "cod_red": st.column_config.TextColumn("Código"),
+            "nombre": st.column_config.TextColumn("Nombre"),
+            "cod_lider": st.column_config.TextColumn("Código del líder"),
+            "nombre_lider": st.column_config.TextColumn("Nombre del líder"),
+        },
+        use_container_width=False,
+        hide_index=True,
+    )
+
 with st.expander("🏠 Ver células activas"):
     celulas_activas = st.session_state.celulas.copy()
     # Ocultar algunas columnas
@@ -135,6 +177,87 @@ with st.expander("📆 Ver ultima actividad de células"):
             "dias_transc": st.column_config.NumberColumn(
                 "Dias", help="Cantidad de días transcurridos desde la última actividad"
             ),
+        },
+        use_container_width=False,
+        hide_index=True,
+    )
+
+with st.expander("⚠️ Ver últimas 10 células suspendidas"):
+    campos_celulas_suspendidas = [
+        "id_celula",
+        "observ",
+        "fecha",
+        "fecha_recibido",
+        "anfitriones",
+        "cod_red",
+        "nombre",
+        "cod_lider",
+        "nombre_lider",
+    ]
+    df_celulas_suspendidas = st.session_state.celulas_historico.copy()
+    df_celulas_suspendidas = df_celulas_suspendidas[
+        df_celulas_suspendidas["asistentes"] == 0
+    ]  # Filtrar solo células suspendidas
+    df_celulas_suspendidas = df_celulas_suspendidas[campos_celulas_suspendidas].tail(10)
+    df_celulas_suspendidas.sort_values(by="fecha", ascending=True, inplace=True)
+    st.dataframe(
+        df_celulas_suspendidas,
+        column_config={
+            "id_celula": st.column_config.TextColumn("ID de la célula"),
+            "observ": st.column_config.TextColumn("Observaciones"),
+            "fecha": st.column_config.DateColumn("Fecha"),
+            "fecha_recibido": st.column_config.DateColumn("Fecha recibido"),
+            "anfitriones": st.column_config.TextColumn("Anfitriones"),
+            "cod_red": st.column_config.TextColumn("Código"),
+            "nombre": st.column_config.TextColumn("Nombre"),
+            "cod_lider": st.column_config.TextColumn("Código del lider"),
+            "nombre_lider": st.column_config.TextColumn("Nombre del lider"),
+        },
+        use_container_width=False,
+        hide_index=True,
+    )
+
+with st.expander("⚠️ Códigos sin células"):
+    liderazgo = st.session_state.liderazgo.copy()[
+        [
+            "id_cod",
+            "cod_red",
+            "nombre",
+            "cod_lider",
+            "nombre_lider",
+            "cod_base_lider",
+            "estatus",
+        ]
+    ]
+    liderazgo = liderazgo[liderazgo["estatus"] == 1]  # Filtrar solo liderazgo activo
+    celulas_activas = st.session_state.celulas.copy()
+    # Unir los datos de liderazgo con las células activas
+    df_join = liderazgo.merge(
+        celulas_activas,
+        left_on="id_cod",
+        right_on="id_cod",
+        how="left",
+    )
+    # Filtrar los códigos que no tienen células asociadas
+    df_join = df_join[df_join["estatus_celula"].isna()]
+    df_join = df_join[
+        [
+            "cod_red_x",
+            "nombre_x",
+            "cod_lider_x",
+            "nombre_lider_x",
+            "cod_base_lider_x",
+        ]
+    ]
+    df_join.sort_values(by=["cod_base_lider_x", "cod_red_x"], inplace=True)
+    st.dataframe(
+        df_join,
+        column_config={
+            "cod_red_x": st.column_config.TextColumn("Código"),
+            "nombre_x": st.column_config.TextColumn("Nombre"),
+            "cod_lider_x": st.column_config.TextColumn("Código del líder"),
+            "nombre_lider_x": st.column_config.TextColumn("Nombre del líder"),
+            "cod_base_lider_x": st.column_config.TextColumn("Código del base líder"),
         },
         use_container_width=False,
         hide_index=True,

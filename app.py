@@ -83,6 +83,9 @@ def login(user, passw):
             )
             # Obtener los temas de las células
             st.session_state.temas = st.session_state.data.get_temas_celulas()
+
+            st.session_state.liderazgo = st.session_state.data.get_liderazgo()
+
             # Obtener el nuevo id del registro de actividad en las células
             st.session_state.id_registro_celulas = str(
                 st.session_state.celulas_historico["id"].max() + 1

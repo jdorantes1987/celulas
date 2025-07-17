@@ -72,6 +72,7 @@ class Liderazgo:
             },
             inplace=True,
         )
+        df_join["estatus"] = df_join["estatus"].fillna(1).astype(int)
         return df_join[
             [
                 "id_liderazgo",
@@ -84,3 +85,15 @@ class Liderazgo:
                 "estatus",
             ]
         ].copy()
+
+
+if __name__ == "__main__":
+    from scripts.data_sheets import ManageSheets
+
+    manager_sheets = ManageSheets(
+        file_sheet_name="celulas",
+        spreadsheet_id="1GEtYGIQCucTTd6yVuC7dssMuJeYklbehJfWAC1UNkpE",
+        credentials_file="key.json",
+    )
+    oData = Liderazgo(manager_sheets=manager_sheets)
+    print(oData.get_codigos_con_liderazgo())

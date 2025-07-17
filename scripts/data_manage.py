@@ -171,6 +171,7 @@ class DataManage:
                 "asistentes",
                 "monto_bs",
                 "monto_usd",
+                "observ",
                 "sobre_entregado",
                 "estatus_celula",
                 "estatus_liderazgo",
