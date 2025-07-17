@@ -231,6 +231,20 @@ with st.expander("⚠️ Códigos sin células"):
     ]
     liderazgo = liderazgo[liderazgo["estatus"] == 1]  # Filtrar solo liderazgo activo
     celulas_activas = st.session_state.celulas.copy()
+    celulas_activas = (
+        celulas_activas.groupby(
+            [
+                "id_cod",
+                "cod_red",
+                "nombre",
+                "cod_lider",
+                "nombre_lider",
+                "cod_base_lider",
+            ]
+        )
+        .agg({"estatus_celula": "count"})
+        .reset_index()
+    )
     # Unir los datos de liderazgo con las células activas
     df_join = liderazgo.merge(
         celulas_activas,
@@ -249,6 +263,17 @@ with st.expander("⚠️ Códigos sin células"):
             "cod_base_lider_x",
         ]
     ]
+
+    # Metrica de códigos sin células
+    l_activo = st.session_state.liderazgo.copy()
+    l_activo = l_activo[l_activo["estatus"] == 1]
+    st.metric(
+        label="Cantidad",
+        value=df_join.shape[0],
+        delta=abs(df_join.shape[0] - l_activo.shape[0]),
+        help="Cantidad de códigos que no tienen células activas versus los activos. El número más pequeño indica la cantidad de códigos base con células activas.",
+    )
+
     df_join.sort_values(by=["cod_base_lider_x", "cod_red_x"], inplace=True)
     st.dataframe(
         df_join,
