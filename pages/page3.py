@@ -19,7 +19,7 @@ for key, default in [
     if key not in st.session_state:
         st.session_state[key] = default
 
-st.header("Datos del sobre")
+st.header("Sobre célula")
 
 
 def set_state(i):
@@ -151,15 +151,14 @@ registro = [
     fecha_insert,
 ]
 
-if st.button("agregar"):
-    Celulas(manager_sheets=st.session_state.manager_sheets).add_actividad(registro)
-    set_state(3)
+if st.session_state.stage3 == 2:
+    if st.button("agregar", on_click=set_state, args=[3]):
+        pass
 
-# if st.session_state.stage >= 1 and st.session_state.stage != 3:
-#    st.button('agregar', on_click=agregar_registro, args=[3])
 
 if st.session_state.stage3 >= 3:
-    st.success(f"Registro {st.session_state.id_registro_celulas} insertado.")
+    st.info(f"Insertando registro {st.session_state.id_registro_celulas}...")
+    Celulas(manager_sheets=st.session_state.manager_sheets).add_actividad(registro)
     st.session_state.celulas_historico = (
         st.session_state.data.get_celulas_historico_con_liderazgo()
     )
@@ -168,10 +167,4 @@ if st.session_state.stage3 >= 3:
     )
     col1, col2 = st.columns([0.1, 0.1])
     with col1:
-        col1.button("Continuar con otro registro?", on_click=set_state, args=[1])
-    with col2:
-        col2.button("ir a estadisticas", on_click=set_state, args=[4])
-
-if st.session_state.stage3 == 4:
-    del st.session_state.stage3
-    st.switch_page("pages/page5.py")
+        col1.button("Nuevo registro", on_click=set_state, args=[1])

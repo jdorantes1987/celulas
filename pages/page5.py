@@ -30,21 +30,21 @@ if st.session_state.stage5 == 0:
 st.title("📊 Estadísticas Generales")
 
 # Layout profesional con columnas
-col1, col2, col3 = st.columns(3)
+col1, col2, col3, col4 = st.columns(4)
 
 with col1:
-    st.subheader("🏠 Células activas")
+    st.subheader("🏠 Células")
     df_celulas = st.session_state.celulas
     st.metric(
-        label="Células activas",
+        label="Activas",
         value=df_celulas.shape[0],
     )
 
 with col2:
-    st.subheader("🎯Discipulados activos")
+    st.subheader("🎯Discipulados")
     df_discipulados = st.session_state.discipulados
     st.metric(
-        label="Discipulados activos",
+        label="Activos",
         value=df_discipulados.shape[0],
     )
 
@@ -57,10 +57,6 @@ with col3:
     df_discipulados_historico = df_discipulados_historico[
         df_discipulados_historico["sobre_entregado"] == 0
     ]
-    df_celulas_historico["monto_bs"] = df_celulas_historico["monto_bs"].fillna(0)
-    df_discipulados_historico["monto_bs"] = df_discipulados_historico[
-        "monto_bs"
-    ].fillna(0)
     total_bs = (
         df_celulas_historico["monto_bs"].sum()
         + df_discipulados_historico["monto_bs"].sum()
@@ -68,6 +64,17 @@ with col3:
     st.metric(
         label="💶 Sobres por entregar",
         value=f"Bs. {total_bs:,.2f}",
+    )
+
+    total_usd = (
+        df_celulas_historico["monto_usd"].sum()
+        + df_discipulados_historico["monto_usd"].sum()
+    )
+
+with col4:
+    st.metric(
+        label="💵 Sobres por entregar",
+        value=f"$. {total_usd:,.2f}",
     )
 
 

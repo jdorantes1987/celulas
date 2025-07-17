@@ -14,7 +14,7 @@ make_sidebar()
 
 today = datetime.datetime.now()
 
-st.header("Datos del sobre")
+st.header("Sobre discipulado")
 
 for key, default in [
     ("stage4", 0),
@@ -144,16 +144,13 @@ registro = [
     fecha_insert,
 ]
 
-
-if st.button("agregar"):
-    Discipulados(manager_sheets=st.session_state.manager_sheets).add_actividad(registro)
-    set_state(3)
-
-# if st.session_state.stage4 >= 1 and st.session_state.stage4 != 3:
-#    st.button('agregar', on_click=agregar_registro, args=[3])
+if st.session_state.stage4 == 1:
+    if st.button("agregar", on_click=set_state, args=[3]):
+        pass
 
 if st.session_state.stage4 >= 3:
-    st.success(f"Registro {st.session_state.id_registro_discipulado} insertado.")
+    st.info(f"Insertando registro {st.session_state.id_registro_discipulado}...")
+    Discipulados(manager_sheets=st.session_state.manager_sheets).add_actividad(registro)
     # Actualizar los datos en la sesión
     st.session_state.discipulados_historico = (
         st.session_state.data.get_discipulados_historico_con_liderazgo()
@@ -163,10 +160,4 @@ if st.session_state.stage4 >= 3:
     )
     col1, col2 = st.columns([0.1, 0.1])
     with col1:
-        col1.button("Continuar con otro registro?", on_click=set_state, args=[0])
-    with col2:
-        col2.button("ir a estadisticas", on_click=set_state, args=[4])
-
-if st.session_state.stage4 == 4:
-    del st.session_state.stage4
-    st.switch_page("pages/page5.py")
+        col1.button("Nuevo registro", on_click=set_state, args=[0])

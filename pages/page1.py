@@ -12,7 +12,7 @@ st.write(css, unsafe_allow_html=True)
 def stream_data(text):
     for word in text.split(" "):
         yield word + " "
-        time.sleep(0.02)
+        time.sleep(0.01)
 
 
 t1, t2 = st.columns((0.5, 5))

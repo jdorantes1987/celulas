@@ -8,7 +8,6 @@ from gestion_user.usuarios_roles import ClsUsuariosRoles
 from scripts.data_manage import DataManageSingleton
 from scripts.data_sheets import ManageSheets
 
-
 # Configuración de página con fondo personalizado
 st.set_page_config(
     page_title="Células",
@@ -42,8 +41,8 @@ def login(user, passw):
         print(f"{date} Usuario {user} ha iniciado sesión.")
         st.session_state.logged_in = True
         st.cache_data.clear()
-
-        with st.spinner("Cargando datos..."):
+        st.success("Sesión iniciada exitosamente!")
+        with st.spinner("Preparando inicio de sesión..."):
             SPREADSHEET_ID = st.secrets.google_sheets.CELULAS_ID
             FILE_NAME = st.secrets.google_sheets.FILE_NAME
             CREDENTIALS_DICT = dict(st.secrets.google_service_account)
@@ -92,8 +91,7 @@ def login(user, passw):
             st.session_state.id_registro_discipulado = str(
                 st.session_state.discipulados_historico["id"].max() + 1
             )
-        st.success("Sesión iniciada exitosamente!")
-        st.switch_page(MENU_INICIO)
+            st.switch_page(MENU_INICIO)
         return True
     return False
 

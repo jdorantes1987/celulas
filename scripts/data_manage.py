@@ -231,6 +231,7 @@ class DataManage:
 
         df_join["id"] = df_join["id"].astype(int)
         df_join["asistentes"] = df_join["asistentes"].astype(int)
+        df_join["sobre_entregado"] = df_join["sobre_entregado"].astype(int)
         df_join["estatus_liderazgo"] = df_join["estatus_liderazgo"].astype(int)
 
         cols_montos = [
