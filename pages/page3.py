@@ -156,6 +156,9 @@ if st.button("agregar"):
     st.session_state.celulas_historico = (
         st.session_state.data.get_celulas_historico_con_liderazgo()
     )
+    st.session_state.id_registro_celulas = str(
+        st.session_state.celulas_historico["id"].max() + 1
+    )
     set_state(3)
 
 # if st.session_state.stage >= 1 and st.session_state.stage != 3:
