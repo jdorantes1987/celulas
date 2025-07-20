@@ -30,7 +30,7 @@ if st.session_state.stage5 == 0:
 st.title("📊 Estadísticas Generales")
 
 # Layout profesional con columnas
-col1, col2, col3, col4 = st.columns(4)
+col1, col2 = st.columns(2)
 
 with col1:
     st.subheader("🏠 Células")
@@ -48,6 +48,7 @@ with col2:
         value=df_discipulados.shape[0],
     )
 
+col3, col4 = st.columns(2)
 with col3:
     df_celulas_historico = st.session_state.celulas_historico.copy()
     df_celulas_historico = df_celulas_historico[
