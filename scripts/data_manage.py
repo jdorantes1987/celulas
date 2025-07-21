@@ -33,6 +33,7 @@ class DataManage:
         Obtiene los datos de liderazgo de red.
         """
         df_liderazgo = self.oLiderazgo.get_liderazgo_de_red()
+        df_liderazgo.sort_values(by="fecha_ini", ascending=False, inplace=True)
         df_liderazgo["estatus"] = df_liderazgo["estatus"].astype(int)
         df_liderazgo.rename(
             columns={

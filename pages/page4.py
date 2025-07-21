@@ -147,12 +147,14 @@ registro = [
 ]
 
 if st.session_state.stage4 == 1:
-    if st.button("agregar", on_click=set_state, args=[3]):
-        pass
+    st.button("agregar", on_click=set_state, args=[3])
 
-if st.session_state.stage4 >= 3:
+if st.session_state.stage4 == 3:
     st.info(f"Insertando registro {st.session_state.id_registro_discipulado}...")
     Discipulados(manager_sheets=st.session_state.manager_sheets).add_actividad(registro)
+    st.success(
+        f"Registro {st.session_state.id_registro_discipulado} insertado exitosamente!"
+    )
     # Actualizar los datos en la sesión
     st.session_state.discipulados_historico = (
         st.session_state.data.get_discipulados_historico_con_liderazgo()
@@ -160,6 +162,7 @@ if st.session_state.stage4 >= 3:
     st.session_state.id_registro_discipulado = str(
         st.session_state.discipulados_historico["id"].max() + 1
     )
-    col1, col2 = st.columns([0.1, 0.1])
-    with col1:
-        col1.button("Nuevo registro", on_click=set_state, args=[0])
+    set_state(4)
+
+if st.session_state.stage4 == 4:
+    st.button("Nuevo registro", on_click=set_state, args=[0])
