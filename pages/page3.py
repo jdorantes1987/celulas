@@ -42,6 +42,10 @@ if st.session_state.stage3 == 1:
     st.session_state.w_m_bs = 0
     st.session_state.w_m_usd = 0
     st.session_state.w_s_entr = False
+    st.session_state.w_fecha = today
+    st.session_state.w_fecha_e = today
+    st.session_state.w_fecha_r = today
+
     set_state(2)
 
 col1, col2 = st.columns(2, gap="small")
@@ -61,11 +65,11 @@ with col2:
 col3, col4, col5 = st.columns(3, gap="small")
 
 with col3:
-    fecha_celula = st.date_input("fecha célula")
+    fecha_celula = st.date_input("fecha célula", key="w_fecha", value=today)
 with col4:
-    fecha_recibido = st.date_input("fecha recibido")
+    fecha_recibido = st.date_input("fecha recibido", key="w_fecha_r", value=today)
 with col5:
-    fecha_entregado = st.date_input("fecha entregado")
+    fecha_entregado = st.date_input("fecha entregado", key="w_fecha_e", value=today)
 
 celulas = st.session_state.celulas.copy()
 celulas["buscador"] = (

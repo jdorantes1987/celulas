@@ -1,5 +1,6 @@
 import datetime
 
+import pytz
 import streamlit as st
 from pandas import to_datetime
 
@@ -12,7 +13,8 @@ st.set_page_config(page_title="Temas", layout="wide", page_icon="")
 
 make_sidebar()
 
-today = datetime.datetime.now()
+pytz.timezone("America/Caracas")
+today = datetime.datetime.now(pytz.timezone("America/Caracas"))
 
 for key, default in [
     ("stage6", 0),
@@ -126,6 +128,7 @@ with st.form("agregar_tema"):
 
                 if response["success"]:
                     st.success(f"Tema '{id_tema}' agregado exitosamente.")
+                    st.session_state.temas = st.session_state.data.get_temas_celulas()
                     set_state(0)
                     st.rerun()  # Recargar la página para mostrar el nuevo tema
                 else:

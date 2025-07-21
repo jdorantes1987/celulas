@@ -57,6 +57,7 @@ def login(user, passw):
             st.session_state.data = DataManageSingleton.get_instance(
                 st.session_state.manager_sheets
             )
+
             st.session_state.liderazgo_red = (
                 st.session_state.data.get_liderazgo_de_red()
             )

@@ -1,5 +1,6 @@
 import datetime
 
+import pytz
 import streamlit as st
 from pandas import to_datetime
 
@@ -9,7 +10,8 @@ st.set_page_config(page_title="Estadísticas Generales", layout="wide", page_ico
 
 make_sidebar()
 
-today = datetime.datetime.now()
+pytz.timezone("America/Caracas")
+today = datetime.datetime.now(pytz.timezone("America/Caracas"))
 
 for key, default in [
     ("stage5", 0),
@@ -166,7 +168,9 @@ with st.expander("📆 Ver ultima actividad de células"):
         .max()
         .reset_index()
     )
-    resumen["dias_transc"] = (today - resumen["fecha"]).dt.days
+    resumen["dias_transc"] = (
+        today - resumen["fecha"].dt.tz_localize("America/Caracas")
+    ).dt.days
     resumen["fecha"] = resumen["fecha"].dt.date
     st.dataframe(
         resumen,
@@ -313,7 +317,9 @@ with st.expander("📆 Ver ultima actividad de discipulados"):
     df["fecha"] = to_datetime(df["fecha"], yearfirst=True)
     # Agrupar y obtener la última fecha y días transcurridos
     resumen = df.groupby(["cod_red", "nombre"])["fecha"].max().reset_index()
-    resumen["dias_transc"] = (today - resumen["fecha"]).dt.days
+    resumen["dias_transc"] = (
+        today - resumen["fecha"].dt.tz_localize("America/Caracas")
+    ).dt.days
     resumen["fecha"] = resumen["fecha"].dt.date
     st.dataframe(
         resumen,
