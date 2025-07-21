@@ -1,5 +1,6 @@
 import datetime
 
+import pytz
 import streamlit as st
 
 from gestion_user.usuarios import ClsUsuarios
@@ -10,8 +11,11 @@ st.set_page_config(
     page_title="Células - Registro de sobres", layout="wide", page_icon=""
 )
 make_sidebar()
+# Configurar datetime con zona horaria de Venezuela
+# Esto es necesario para que las fechas se manejen correctamente en la zona horaria local
 
-today = datetime.datetime.now()
+pytz.timezone("America/Caracas")
+today = datetime.datetime.now(pytz.timezone("America/Caracas"))
 
 for key, default in [
     ("stage3", 0),

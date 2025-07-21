@@ -1,5 +1,6 @@
 import datetime
 
+import pytz
 import streamlit as st
 
 from gestion_user.usuarios import ClsUsuarios
@@ -12,7 +13,8 @@ st.set_page_config(
 
 make_sidebar()
 
-today = datetime.datetime.now()
+pytz.timezone("America/Caracas")
+today = datetime.datetime.now(pytz.timezone("America/Caracas"))
 
 st.header("Sobre discipulado")
 
