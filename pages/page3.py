@@ -65,11 +65,11 @@ with col2:
 col3, col4, col5 = st.columns(3, gap="small")
 
 with col3:
-    fecha_celula = st.date_input("fecha célula", key="w_fecha", value=today)
+    fecha_celula = st.date_input("fecha célula", key="w_fecha")
 with col4:
-    fecha_recibido = st.date_input("fecha recibido", key="w_fecha_r", value=today)
+    fecha_recibido = st.date_input("fecha recibido", key="w_fecha_r")
 with col5:
-    fecha_entregado = st.date_input("fecha entregado", key="w_fecha_e", value=today)
+    fecha_entregado = st.date_input("fecha entregado", key="w_fecha_e")
 
 celulas = st.session_state.celulas.copy()
 celulas["buscador"] = (
@@ -164,21 +164,34 @@ if st.session_state.stage3 == 2:
 
 
 if st.session_state.stage3 == 3:
-    st.info(f"Insertando registro {st.session_state.id_registro_celulas}...")
-    Celulas(manager_sheets=st.session_state.manager_sheets).add_actividad(registro)
-    st.success(
-        f"Registro {st.session_state.id_registro_celulas} insertado exitosamente!"
-    )
-    # Actualizar los datos en la sesión
-    st.session_state.celulas_historico = (
-        st.session_state.data.get_celulas_historico_con_liderazgo()
-    )
-    st.session_state.id_registro_celulas = str(
-        st.session_state.celulas_historico["id"].max() + 1
-    )
-    set_state(4)
+    oCelulas = Celulas(manager_sheets=st.session_state.manager_sheets)
+    # Verificar si el registro ya existe
+    if not oCelulas.existe_registro(
+        data_historico=st.session_state.celulas_historico,
+        id_celula=id_celula,
+        id_tema=tema_select,
+    ):
+
+        oCelulas.add_actividad(registro)
+        st.success(
+            f"Registro {st.session_state.id_registro_celulas} insertado exitosamente!"
+        )
+        set_state(4)
+    else:
+        st.error(
+            f"El registro con ID célula '{id_celula}' y tema '{tema_select}' ya existe."
+        )
+        set_state(2)
 
 
 if st.session_state.stage3 == 4:
     if st.button("Nuevo registro"):
+        # Actualizar los datos en la sesión
+        st.session_state.celulas_historico = (
+            st.session_state.data.get_celulas_historico_con_liderazgo()
+        )
+        st.session_state.id_registro_celulas = str(
+            st.session_state.celulas_historico["id"].max() + 1
+        )
         set_state(1)
+        st.rerun()

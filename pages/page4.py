@@ -150,19 +150,31 @@ if st.session_state.stage4 == 1:
     st.button("agregar", on_click=set_state, args=[3])
 
 if st.session_state.stage4 == 3:
-    st.info(f"Insertando registro {st.session_state.id_registro_discipulado}...")
-    Discipulados(manager_sheets=st.session_state.manager_sheets).add_actividad(registro)
-    st.success(
-        f"Registro {st.session_state.id_registro_discipulado} insertado exitosamente!"
-    )
-    # Actualizar los datos en la sesión
-    st.session_state.discipulados_historico = (
-        st.session_state.data.get_discipulados_historico_con_liderazgo()
-    )
-    st.session_state.id_registro_discipulado = str(
-        st.session_state.discipulados_historico["id"].max() + 1
-    )
-    set_state(4)
+    oDiscipulados = Discipulados(manager_sheets=st.session_state.manager_sheets)
+    if not oDiscipulados.existe_registro(
+        data_historico=st.session_state.discipulados_historico,
+        id_discipulado=id_discipulado,
+        fecha=fecha.strftime("%Y-%m-%d"),
+    ):
+        oDiscipulados.add_actividad(registro)
+        st.success(
+            f"Registro {st.session_state.id_registro_discipulado} insertado exitosamente!"
+        )
+        set_state(4)
+    else:
+        st.error(
+            f"El discipulado {id_discipulado} de fecha {fecha.strftime('%d-%m-%Y')}, ya se encuentra registrado."
+        )
+        set_state(1)
 
 if st.session_state.stage4 == 4:
-    st.button("Nuevo registro", on_click=set_state, args=[0])
+    if st.button("Nuevo registro"):
+        # Actualizar los datos en la sesión
+        st.session_state.discipulados_historico = (
+            st.session_state.data.get_discipulados_historico_con_liderazgo()
+        )
+        st.session_state.id_registro_discipulado = str(
+            st.session_state.discipulados_historico["id"].max() + 1
+        )
+        set_state(0)
+        st.rerun()

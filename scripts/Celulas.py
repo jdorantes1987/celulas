@@ -17,6 +17,20 @@ class Celulas:
         """
         return self.oSheets.get_data_hoja(sheet_name="hist_celulas")
 
+    def existe_registro(
+        self, data_historico: DataFrame, id_celula: str, id_tema: str
+    ) -> bool:
+        """
+        Verifica si un registro ya existe en la hoja de cálculo.
+        """
+        # Usa indexación booleana y .any() para verificar la existencia de forma eficiente
+        existe = (
+            (data_historico["id_celula"] == id_celula)
+            & (data_historico["id_tema"] == id_tema)
+        ).any()
+
+        return existe
+
     def add_actividad(self, data_actividad) -> dict:
         """
         Agrega una nueva actividad a la hoja de cálculo y retorna la respuesta del API.
