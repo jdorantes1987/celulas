@@ -23,10 +23,11 @@ class Celulas:
         """
         Verifica si un registro ya existe en la hoja de cálculo.
         """
-        # Usa indexación booleana y .any() para verificar la existencia de forma eficiente
+        # Usa indexación booleana y .any() para verificar la existencia del registro de forma eficiente
         existe = (
             (data_historico["id_celula"] == id_celula)
             & (data_historico["id_tema"] == id_tema)
+            & (id_tema != "TM99999999")
         ).any()
 
         return existe
