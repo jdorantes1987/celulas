@@ -42,9 +42,9 @@ if st.session_state.stage3 == 1:
     st.session_state.w_m_bs = 0
     st.session_state.w_m_usd = 0
     st.session_state.w_s_entr = False
-    st.session_state.w_fecha = today
-    st.session_state.w_fecha_e = today
-    st.session_state.w_fecha_r = today
+    # st.session_state.w_fecha = today
+    # st.session_state.w_fecha_e = today
+    # st.session_state.w_fecha_r = today
 
     set_state(2)
 
