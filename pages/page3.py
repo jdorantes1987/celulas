@@ -185,13 +185,14 @@ if st.session_state.stage3 == 3:
 
 
 if st.session_state.stage3 == 4:
-    if st.button("Nuevo registro"):
-        # Actualizar los datos en la sesión
-        st.session_state.celulas_historico = (
-            st.session_state.data.get_celulas_historico_con_liderazgo()
-        )
-        st.session_state.id_registro_celulas = str(
-            st.session_state.celulas_historico["id"].max() + 1
-        )
+    if st.button("Actualizar nuevo registro"):
+        with st.spinner("Preparando nuevo registro..."):
+            # Actualizar los datos en la sesión
+            st.session_state.celulas_historico = (
+                st.session_state.data.get_celulas_historico_con_liderazgo()
+            )
+            st.session_state.id_registro_celulas = str(
+                st.session_state.celulas_historico["id"].max() + 1
+            )
         set_state(1)
         st.rerun()
