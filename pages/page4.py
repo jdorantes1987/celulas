@@ -168,14 +168,14 @@ if st.session_state.stage4 == 3:
         set_state(1)
 
 if st.session_state.stage4 == 4:
+    with st.spinner("Preparando nuevo registro..."):
+        # Actualizar los datos en la sesión
+        st.session_state.discipulados_historico = (
+            st.session_state.data.get_discipulados_historico_con_liderazgo()
+        )
+        st.session_state.id_registro_discipulado = str(
+            st.session_state.discipulados_historico["id"].max() + 1
+        )
     if st.button("Nuevo registro"):
-        with st.spinner("Preparando nuevo registro..."):
-            # Actualizar los datos en la sesión
-            st.session_state.discipulados_historico = (
-                st.session_state.data.get_discipulados_historico_con_liderazgo()
-            )
-            st.session_state.id_registro_discipulado = str(
-                st.session_state.discipulados_historico["id"].max() + 1
-            )
         set_state(0)
         st.rerun()
