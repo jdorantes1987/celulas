@@ -48,7 +48,10 @@ def _extracted_from_make_sidebar():
         )
     st.page_link("pages/page5.py", label="Estadísticas Generales", icon=None)
 
-    if st.button("Cerrar sesión"):
+    if st.button(
+        "Cerrar sesión",
+        type="primary",
+    ):
         logout()
 
     st.cache_data.clear()
