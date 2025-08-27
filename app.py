@@ -41,7 +41,7 @@ def login(user, passw):
         print(f"{date} Usuario {user} ha iniciado sesión.")
         st.session_state.logged_in = True
         st.cache_data.clear()
-        st.success("Sesión iniciada exitosamente!")
+        st.toast("Sesión iniciada exitosamente!", icon="✅")
         with st.spinner("Preparando inicio de sesión..."):
             SPREADSHEET_ID = st.secrets.google_sheets.CELULAS_ID
             FILE_NAME = st.secrets.google_sheets.FILE_NAME

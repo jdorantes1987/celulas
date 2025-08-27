@@ -14,18 +14,19 @@ def get_current_page_name():
 
 def make_sidebar():
     with st.sidebar:
-        # Custom CSS for changing the sidebar color
-        custom_css = """
-        """
-        # Apply custom CSS
-        st.markdown(custom_css, unsafe_allow_html=True)
+        # Centrar el título
+        # quitar margenes
         st.markdown(
-            "<h1 style='text-align: center; color: grey;'>Gestión de Casas de Bendición</h1>",
+            "<h1 style='text-align: center; margin: 0;'>Gestión de Casas de Bendición</h1>",
             unsafe_allow_html=True,
         )
-        st.sidebar.markdown("---")
-        st.write("")
-        st.write("")
+        # imagen desde URL
+        # Quitar margenes
+        image_url = "images/fuego.gif"
+
+        st.image(image_url, use_container_width=True)
+        # imagen local
+        st.markdown("---")
 
         if st.session_state.get("logged_in", False):
             _extracted_from_make_sidebar()
