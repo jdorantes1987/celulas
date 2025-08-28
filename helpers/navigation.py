@@ -11,6 +11,8 @@ def get_current_page_name():
     if ctx is None:
         raise RuntimeError("No se pudo obtener el contexto del script.")
 
+    return ctx.page_script_hash.split("/")[-1]  # type: ignore
+
 
 def make_sidebar():
     with st.sidebar:
