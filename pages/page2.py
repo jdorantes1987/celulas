@@ -132,9 +132,6 @@ with st.form("agregar_tema"):
                     set_state(0)
                     st.rerun()  # Recargar la página para mostrar el nuevo tema
                 else:
-                    st.error(response["message"])
-            except Exception as e:
-                st.error(f"Error al agregar el tema: {e}")
-                st.error(response["message"])
+                    st.error(f"Error al agregar el tema: {response['message']}")
             except Exception as e:
                 st.error(f"Error al agregar el tema: {e}")
